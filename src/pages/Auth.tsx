@@ -464,7 +464,6 @@ const Auth = () => {
                 {portal.passwordHint && !isClientPortal && (
                   <p className="text-[11px] text-muted-foreground mt-1">{portal.passwordHint}</p>
                 )}
-                </div>
                 {errors.identifier && (
                   <p className="text-sm text-destructive mt-1">{errors.identifier}</p>
                 )}
