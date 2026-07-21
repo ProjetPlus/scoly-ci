@@ -445,7 +445,9 @@ const Auth = () => {
 
             {isLogin && (
               <div>
-                <Label htmlFor="identifier">Email ou nom d'utilisateur</Label>
+                <Label htmlFor="identifier">
+                  {isClientPortal ? "Email ou nom d'utilisateur" : "Email professionnel"}
+                </Label>
                 <div className="relative mt-1">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                   <Input
@@ -454,9 +456,14 @@ const Auth = () => {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     className="pl-10"
-                    placeholder="email@example.ci ou Admin"
+                    placeholder={portal.identifierPlaceholder}
                     required
+                    autoComplete="username"
                   />
+                </div>
+                {portal.passwordHint && !isClientPortal && (
+                  <p className="text-[11px] text-muted-foreground mt-1">{portal.passwordHint}</p>
+                )}
                 </div>
                 {errors.identifier && (
                   <p className="text-sm text-destructive mt-1">{errors.identifier}</p>
