@@ -143,6 +143,40 @@ const KitsHeroCarousel = () => {
     }
   };
 
+  // Swipe tactile — préserve le focus, bloque le scroll page en horizontal
+  const touchRef = useRef<{ x: number; y: number; locked: null | "h" | "v" } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    setIsPlaying(false);
+    const t = e.touches[0];
+    touchRef.current = { x: t.clientX, y: t.clientY, locked: null };
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    const s = touchRef.current;
+    if (!s) return;
+    const t = e.touches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (s.locked === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      s.locked = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+    }
+    if (s.locked === "h" && e.cancelable) {
+      // Empêche le scroll vertical de la page pendant un swipe horizontal
+      e.preventDefault();
+    }
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touchRef.current;
+    touchRef.current = null;
+    if (!s || s.locked !== "h") return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - s.x;
+    const THRESHOLD = 40;
+    if (Math.abs(dx) < THRESHOLD) return;
+    // Conserve le focus sur la région pour que le clavier reste utilisable
+    regionRef.current?.focus({ preventScroll: true });
+    scrollBy(dx < 0 ? 1 : -1);
+  };
+
   if (kits.length === 0) return null;
 
   return (
@@ -158,7 +192,10 @@ const KitsHeroCarousel = () => {
       onMouseLeave={() => setIsPlaying(true)}
       onFocus={() => setIsPlaying(false)}
       onBlur={() => setIsPlaying(true)}
-      onTouchStart={() => setIsPlaying(false)}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: "pan-y" }}
     >
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-end justify-between gap-3 mb-4">
@@ -230,15 +267,19 @@ const KitsHeroCarousel = () => {
             const price = kit.discount_price ?? kit.total_price ?? 0;
             const isActive = idx === activeIdx;
             return (
-              <Link
+              <div
                 key={kit.id}
-                to="/kits-scolaires"
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${idx + 1} sur ${kits.length} — ${kit.name}`}
                 aria-current={isActive ? "true" : undefined}
-                className="snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[32%] lg:w-[24%] group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+                className="snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[32%] lg:w-[24%]"
               >
+                <Link
+                  to="/kits-scolaires"
+                  className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg h-full"
+                  aria-label={`Voir le kit ${kit.name}`}
+                >
                 <div className={`bg-card border rounded-lg overflow-hidden hover:shadow-lg transition-all h-full flex flex-col ${isActive ? "border-primary shadow-md" : "border-border"}`}>
                   <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                     {kit.image_url ? (
@@ -280,7 +321,8 @@ const KitsHeroCarousel = () => {
                     )}
                   </div>
                 </div>
-              </Link>
+                </Link>
+              </div>
             );
           })}
         </div>
