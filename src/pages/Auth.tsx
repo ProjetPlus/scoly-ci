@@ -568,6 +568,7 @@ const Auth = () => {
               <div className="flex items-center justify-end">
                 <button
                   type="button"
+                  aria-label="Mot de passe oublié"
                   className="text-sm text-primary hover:underline"
                   onClick={async () => {
                     const resetEmail = identifier.includes('@') ? identifier : '';
