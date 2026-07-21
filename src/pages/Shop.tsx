@@ -12,7 +12,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, Link } from "react-router-dom";
 import { applySort, type SortMode } from "@/lib/productSort";
-import { getCategoryImageUrl, sortCategories } from "@/lib/categoryAssets";
+import { sortCategories } from "@/lib/categoryAssets";
+import CategoryProductRow from "@/components/CategoryProductRow";
 import { useQuery } from "@tanstack/react-query";
 
 interface Product {
@@ -183,41 +184,31 @@ const Shop = () => {
         </div>
       </section>
 
-      {/* Categories visual grid */}
+      {/* Categories — text pills (no decorative images) */}
       <section className="bg-background border-b border-border">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-1 snap-x">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto pb-1 snap-x">
             <button
               onClick={() => handleCategoryClick(null)}
-              className={`snap-start shrink-0 w-[84px] sm:w-[112px] rounded-xl border p-2 text-center transition-all ${
-                !selectedCategory ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card hover:border-primary/40"
+              className={`snap-start shrink-0 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
+                !selectedCategory
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                  : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-muted"
               }`}
             >
-              <div className="mx-auto mb-1.5 h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-bold text-xs">
-                Tous
-              </div>
-              <span className="block text-[11px] sm:text-xs font-semibold text-foreground leading-tight">Toutes</span>
+              Toutes
             </button>
             {displayCategories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => handleCategoryClick(cat.id, cat.slug)}
-                className={`snap-start shrink-0 w-[84px] sm:w-[112px] rounded-xl border p-2 text-center transition-all ${
-                  selectedCategory === cat.id ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card hover:border-primary/40"
+                className={`snap-start shrink-0 px-4 py-2 rounded-full border text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedCategory === cat.id
+                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                    : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-muted"
                 }`}
               >
-                <SmartImage
-                  src={getCategoryImageUrl(cat)}
-                  alt={cat.name_fr}
-                  className="mx-auto mb-1.5 h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover ring-1 ring-border"
-                  fallbackSrc="/placeholder.svg"
-                  width={56}
-                  height={56}
-                  sizes="56px"
-                />
-                <span className="block text-[11px] sm:text-xs font-semibold text-foreground leading-tight line-clamp-2">
-                  {getLocalizedName(cat)}
-                </span>
+                {getLocalizedName(cat)}
               </button>
             ))}
           </div>
