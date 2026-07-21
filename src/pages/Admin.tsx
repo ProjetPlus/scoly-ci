@@ -320,6 +320,7 @@ const Admin = () => {
           {activeTab === "stats" && <AdvancedStats />}
           {activeTab === "sharestats" && <ShareStatsTab />}
           {activeTab === "products" && <ProductsTab />}
+          {activeTab === "reclassify" && <ProductReclassifier />}
           {activeTab === "categories" && <CategoriesTab />}
           {activeTab === "orders" && <OrdersTab />}
           {activeTab === "payments" && <PaymentsTab />}
