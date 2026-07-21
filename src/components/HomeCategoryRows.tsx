@@ -24,7 +24,6 @@ interface Product {
   category_id: string | null;
   free_shipping: boolean | null;
   views: number | null;
-  sales_count: number | null;
   rating: number | null;
   created_at: string | null;
 }
@@ -42,7 +41,6 @@ const HomeCategoryRows = () => {
       const { data: cats } = await supabase
         .from("categories")
         .select("id,slug,name_fr")
-        .eq("is_active", true)
         .limit(20);
       const sorted = sortCategories((cats || []) as any[]).slice(0, 6);
       if (sorted.length === 0) {
@@ -55,7 +53,7 @@ const HomeCategoryRows = () => {
           const { data } = await supabase
             .from("products")
             .select(
-              "id,name_fr,name_en,name_de,name_es,price,original_price,discount_percent,stock,image_url,is_featured,category_id,free_shipping,views,sales_count,rating,created_at"
+              "id,name_fr,name_en,name_de,name_es,price,original_price,discount_percent,stock,image_url,is_featured,category_id,free_shipping,views,rating,created_at"
             )
             .eq("is_active", true)
             .eq("category_id", c.id)
@@ -63,7 +61,7 @@ const HomeCategoryRows = () => {
             .order("is_featured", { ascending: false })
             .order("views", { ascending: false })
             .limit(12);
-          return { cat: c as Category, products: (data || []) as Product[] };
+          return { cat: c as Category, products: ((data as any) || []) as Product[] };
         })
       );
 
