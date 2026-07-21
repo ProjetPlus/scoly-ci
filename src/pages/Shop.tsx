@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import SEOHead from "@/components/SEOHead";
-import SmartImage from "@/components/SmartImage";
+
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, Link } from "react-router-dom";
@@ -308,7 +308,6 @@ const Shop = () => {
             <div>
               {loading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
-
                   {[...Array(10)].map((_, i) => (
                     <div key={i} className="bg-card rounded-lg border border-border p-2 animate-pulse">
                       <div className="aspect-square bg-muted rounded mb-2" />
@@ -323,11 +322,30 @@ const Shop = () => {
                   <p className="text-foreground font-semibold">Aucun produit trouvé</p>
                   <p className="text-sm text-muted-foreground mt-1">{t.common.noResults}</p>
                 </div>
-              ) : (
+              ) : selectedCategory || searchQuery || selectedPublisher !== "all" ? (
+                // Filtered view — flat responsive grid
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
                   {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
+                </div>
+              ) : (
+                // Default view — Jumia-style: one horizontal row per category
+                <div className="space-y-2 -mx-3 sm:-mx-4 lg:mx-0">
+                  {displayCategories.map((cat) => {
+                    const rowProducts = filteredProducts.filter(
+                      (p) => p.category_id === cat.id,
+                    );
+                    if (rowProducts.length === 0) return null;
+                    return (
+                      <CategoryProductRow
+                        key={cat.id}
+                        title={getLocalizedName(cat)}
+                        slug={cat.slug}
+                        products={rowProducts.slice(0, 20)}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>
