@@ -227,6 +227,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       title: "Déconnexion",
       description: "Vous avez été déconnecté.",
     });
+    // Retour vers l'accueil public — évite les boucles de redirection sur /me & /team.
+    if (typeof window !== "undefined" && window.location.pathname !== "/") {
+      window.location.assign("/");
+    }
   };
 
   return (
