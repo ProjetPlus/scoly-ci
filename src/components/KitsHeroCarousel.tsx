@@ -192,7 +192,10 @@ const KitsHeroCarousel = () => {
       onMouseLeave={() => setIsPlaying(true)}
       onFocus={() => setIsPlaying(false)}
       onBlur={() => setIsPlaying(true)}
-      onTouchStart={() => setIsPlaying(false)}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: "pan-y" }}
     >
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-end justify-between gap-3 mb-4">
