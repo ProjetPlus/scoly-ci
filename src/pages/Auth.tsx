@@ -607,23 +607,34 @@ const Auth = () => {
             )}
 
             <Button type="submit" variant="hero" className="w-full" disabled={loading || (requiresCaptcha && !captchaValid)}>
-              {loading ? t.common.loading : isLogin ? t.auth.loginButton : t.auth.signupButton}
+              {loading ? t.common.loading : portal.loginCta}
             </Button>
-
-            {/* OAuth supprimé - Authentification email/password uniquement */}
           </form>
 
-          {/* Toggle */}
-          <p className="text-center text-muted-foreground mt-6">
-            {isLogin ? t.auth.noAccount : t.auth.hasAccount}{" "}
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary font-medium hover:underline"
-            >
-              {isLogin ? t.auth.signupButton : t.auth.loginButton}
-            </button>
-          </p>
+          {/* Toggle inscription — Clients uniquement */}
+          {allowSignup ? (
+            <p className="text-center text-muted-foreground mt-6 text-sm">
+              {isLogin ? t.auth.noAccount : t.auth.hasAccount}{" "}
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-primary font-medium hover:underline"
+              >
+                {isLogin ? "Créer un compte client" : "Se connecter"}
+              </button>
+            </p>
+          ) : (
+            <p className="text-center text-muted-foreground mt-6 text-xs">
+              {isTeamPortal
+                ? "Vous n'avez pas encore d'accès équipe ? Contactez votre responsable Scoly."
+                : "Vous souhaitez devenir référent partenaire ? "}
+              {isPartnerPortal && (
+                <Link to="/contact" className="text-primary font-medium hover:underline">
+                  Contactez-nous
+                </Link>
+              )}
+            </p>
+          )}
         </div>
       </div>
     </div>
