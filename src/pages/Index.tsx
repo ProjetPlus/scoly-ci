@@ -3,6 +3,8 @@ import HeroSection from "@/components/HeroSection";
 import FeaturedProductsCarousel from "@/components/FeaturedProductsCarousel";
 import FeaturedArticlesCarousel from "@/components/FeaturedArticlesCarousel";
 import FlashDeals from "@/components/FlashDeals";
+import KitsHeroCarousel from "@/components/KitsHeroCarousel";
+import HomeCategoryRows from "@/components/HomeCategoryRows";
 import NewFeaturesSection from "@/components/NewFeaturesSection";
 import SpacesSection from "@/components/SpacesSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -20,7 +22,7 @@ const Index = () => {
   usePublicDataPrefetch();
   return (
     <main id="main-content" className="min-h-screen bg-background">
-      <SEOHead 
+      <SEOHead
         title="Scoly — Fournitures scolaires et bureautiques en Côte d'Ivoire"
         description="Votre référence pour les fournitures scolaires et bureautiques de qualité. Livraison gratuite partout en Côte d'Ivoire."
         url="https://scoly.ci"
@@ -28,8 +30,10 @@ const Index = () => {
       />
       <Navbar />
       <HeroSection />
+      <KitsHeroCarousel />
       <FlashDeals />
       <FeaturedProductsCarousel />
+      <HomeCategoryRows />
       <NewFeaturesSection />
       <RecentlyViewed />
       <SpacesSection />
@@ -46,3 +50,4 @@ const Index = () => {
 };
 
 export default Index;
+

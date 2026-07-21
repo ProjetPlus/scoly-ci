@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
+import MathCaptcha from "@/components/MathCaptcha";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRateLimit } from "@/hooks/useRateLimit";
@@ -26,7 +27,10 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [passwordStrength, setPasswordStrength] = useState<{ score: number; checks: boolean[] }>({ score: 0, checks: [] });
-  // Captcha retiré du portail public — réservé aux espaces internes /team et /me
+  const [captchaValid, setCaptchaValid] = useState(false);
+  // Captcha activé sur les portails internes (/me, /team) uniquement
+  const { pathname: routePath } = useLocation();
+  const requiresCaptcha = routePath === "/me" || routePath === "/team";
 
   const { signIn, signUp, user } = useAuth();
   const { t, language } = useLanguage();
@@ -174,6 +178,12 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      if (requiresCaptcha && !captchaValid) {
+        toast.error("Veuillez résoudre le calcul de sécurité.");
+        setLoading(false);
+        return;
+      }
+
 
 
       // Check rate limit first
@@ -528,7 +538,16 @@ const Auth = () => {
               </div>
             )}
 
-            <Button type="submit" variant="hero" className="w-full" disabled={loading}>
+            {requiresCaptcha && (
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <MathCaptcha onValidChange={setCaptchaValid} />
+                <p className="text-[11px] text-muted-foreground mt-2">
+                  Portail interne : la vérification anti-robot est requise.
+                </p>
+              </div>
+            )}
+
+            <Button type="submit" variant="hero" className="w-full" disabled={loading || (requiresCaptcha && !captchaValid)}>
               {loading ? t.common.loading : isLogin ? t.auth.loginButton : t.auth.signupButton}
             </Button>
 
