@@ -7,12 +7,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import SEOHead from "@/components/SEOHead";
-import SmartImage from "@/components/SmartImage";
+
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, Link } from "react-router-dom";
 import { applySort, type SortMode } from "@/lib/productSort";
-import { getCategoryImageUrl, sortCategories } from "@/lib/categoryAssets";
+import { sortCategories } from "@/lib/categoryAssets";
+import CategoryProductRow from "@/components/CategoryProductRow";
 import { useQuery } from "@tanstack/react-query";
 
 interface Product {
@@ -183,41 +184,31 @@ const Shop = () => {
         </div>
       </section>
 
-      {/* Categories visual grid */}
+      {/* Categories — text pills (no decorative images) */}
       <section className="bg-background border-b border-border">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-1 snap-x">
+        <div className="container mx-auto px-3 sm:px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto pb-1 snap-x">
             <button
               onClick={() => handleCategoryClick(null)}
-              className={`snap-start shrink-0 w-[84px] sm:w-[112px] rounded-xl border p-2 text-center transition-all ${
-                !selectedCategory ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card hover:border-primary/40"
+              className={`snap-start shrink-0 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
+                !selectedCategory
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                  : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-muted"
               }`}
             >
-              <div className="mx-auto mb-1.5 h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-bold text-xs">
-                Tous
-              </div>
-              <span className="block text-[11px] sm:text-xs font-semibold text-foreground leading-tight">Toutes</span>
+              Toutes
             </button>
             {displayCategories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => handleCategoryClick(cat.id, cat.slug)}
-                className={`snap-start shrink-0 w-[84px] sm:w-[112px] rounded-xl border p-2 text-center transition-all ${
-                  selectedCategory === cat.id ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card hover:border-primary/40"
+                className={`snap-start shrink-0 px-4 py-2 rounded-full border text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedCategory === cat.id
+                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                    : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-muted"
                 }`}
               >
-                <SmartImage
-                  src={getCategoryImageUrl(cat)}
-                  alt={cat.name_fr}
-                  className="mx-auto mb-1.5 h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover ring-1 ring-border"
-                  fallbackSrc="/placeholder.svg"
-                  width={56}
-                  height={56}
-                  sizes="56px"
-                />
-                <span className="block text-[11px] sm:text-xs font-semibold text-foreground leading-tight line-clamp-2">
-                  {getLocalizedName(cat)}
-                </span>
+                {getLocalizedName(cat)}
               </button>
             ))}
           </div>
@@ -317,7 +308,6 @@ const Shop = () => {
             <div>
               {loading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
-
                   {[...Array(10)].map((_, i) => (
                     <div key={i} className="bg-card rounded-lg border border-border p-2 animate-pulse">
                       <div className="aspect-square bg-muted rounded mb-2" />
@@ -332,11 +322,30 @@ const Shop = () => {
                   <p className="text-foreground font-semibold">Aucun produit trouvé</p>
                   <p className="text-sm text-muted-foreground mt-1">{t.common.noResults}</p>
                 </div>
-              ) : (
+              ) : selectedCategory || searchQuery || selectedPublisher !== "all" ? (
+                // Filtered view — flat responsive grid
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
                   {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
+                </div>
+              ) : (
+                // Default view — Jumia-style: one horizontal row per category
+                <div className="space-y-2 -mx-3 sm:-mx-4 lg:mx-0">
+                  {displayCategories.map((cat) => {
+                    const rowProducts = filteredProducts.filter(
+                      (p) => p.category_id === cat.id,
+                    );
+                    if (rowProducts.length === 0) return null;
+                    return (
+                      <CategoryProductRow
+                        key={cat.id}
+                        title={getLocalizedName(cat)}
+                        slug={cat.slug}
+                        products={rowProducts.slice(0, 20)}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>

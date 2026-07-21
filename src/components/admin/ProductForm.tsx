@@ -568,11 +568,19 @@ const ProductForm = ({ product, categories, onSubmit, onCancel }: ProductFormPro
 
   return (
     <div className="grid gap-5 py-4">
-      {/* Category */}
+      {/* Category — REQUIRED */}
       <div>
-        <Label>{t.category}</Label>
-        <Select value={formData.category_id} onValueChange={(value) => setFormData((p) => ({ ...p, category_id: value }))}>
-          <SelectTrigger>
+        <Label>
+          {t.category} <span className="text-destructive">*</span>
+        </Label>
+        <Select
+          value={formData.category_id}
+          onValueChange={(value) => setFormData((p) => ({ ...p, category_id: value }))}
+        >
+          <SelectTrigger
+            className={!formData.category_id ? "border-destructive/40" : ""}
+            aria-required="true"
+          >
             <SelectValue placeholder={t.selectCategory} />
           </SelectTrigger>
           <SelectContent>
@@ -583,6 +591,11 @@ const ProductForm = ({ product, categories, onSubmit, onCancel }: ProductFormPro
             ))}
           </SelectContent>
         </Select>
+        {!formData.category_id && (
+          <p className="text-xs text-destructive mt-1">
+            La catégorie est obligatoire pour publier un produit.
+          </p>
+        )}
       </div>
 
       {/* Product Type */}

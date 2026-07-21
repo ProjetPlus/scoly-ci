@@ -63,7 +63,7 @@ import ProviderMonitoring from "@/components/admin/ProviderMonitoring";
 import ZonesManagement from "@/components/admin/ZonesManagement";
 import SchoolKitsManagement from "@/components/admin/SchoolKitsManagement";
 import SmartImage from "@/components/SmartImage";
-import { getCategoryImageUrl, sortCategories } from "@/lib/categoryAssets";
+import { sortCategories, getCategoryInitials } from "@/lib/categoryAssets";
 
 import { Share2 } from "lucide-react";
 
@@ -532,7 +532,7 @@ const CategoriesTab = () => {
       name_de: formData.name_de || formData.name_fr,
       name_es: formData.name_es || formData.name_fr,
       slug,
-      image_url: formData.image_url || getCategoryImageUrl({ slug, name_fr: formData.name_fr, image_url: null }),
+      image_url: null,
       parent_id: formData.parent_id || null,
     };
 
@@ -588,16 +588,8 @@ const CategoriesTab = () => {
         {sortCategories(categories).map((cat) => (
           <div key={cat.id} className="bg-card rounded-xl border border-border p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-muted rounded-lg overflow-hidden">
-                <SmartImage
-                  src={getCategoryImageUrl(cat)}
-                  alt={cat.name_fr}
-                  className="w-full h-full object-cover"
-                  fallbackSrc="/placeholder.svg"
-                  width={48}
-                  height={48}
-                  sizes="48px"
-                />
+              <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                {getCategoryInitials(cat.name_fr || "?")}
               </div>
               <div>
                 <p className="font-medium">{cat.name_fr}</p>

@@ -1648,7 +1648,7 @@ export type Database = {
           author_details: string | null
           author_name: string | null
           brand: string | null
-          category_id: string | null
+          category_id: string
           color: string | null
           created_at: string | null
           description_de: string | null
@@ -1688,7 +1688,7 @@ export type Database = {
           author_details?: string | null
           author_name?: string | null
           brand?: string | null
-          category_id?: string | null
+          category_id: string
           color?: string | null
           created_at?: string | null
           description_de?: string | null
@@ -1728,7 +1728,7 @@ export type Database = {
           author_details?: string | null
           author_name?: string | null
           brand?: string | null
-          category_id?: string | null
+          category_id?: string
           color?: string | null
           created_at?: string | null
           description_de?: string | null
