@@ -1,12 +1,10 @@
-import { configureAxe } from "jest-axe";
+import { configureAxe, toHaveNoViolations } from "jest-axe";
 import { expect } from "vitest";
-import * as matchers from "jest-axe/matchers";
 
-expect.extend(matchers);
+expect.extend(toHaveNoViolations);
 
 export const axe = configureAxe({
   rules: {
-    // Region rule can be noisy for isolated component tests
     region: { enabled: false },
   },
 });
