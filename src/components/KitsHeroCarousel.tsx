@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Package, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight, Package, Sparkles, Pause, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,11 +30,17 @@ const formatFCFA = (v: number) =>
 
 /**
  * Hero Carrousel dédié aux Kits École — mis en avant sur la Home.
- * Affiche image officielle du kit + nom de l'école + niveau.
+ * - Autoplay avec pause au survol / focus / touch
+ * - Navigation clavier (← →) sur la région
+ * - Labels ARIA complets, aria-live pour lecteurs d'écran
+ * - Indicateurs de page cliquables
  */
 const KitsHeroCarousel = () => {
   const [kits, setKits] = useState<Kit[]>([]);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const regionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,21 +64,107 @@ const KitsHeroCarousel = () => {
     };
   }, []);
 
-  const scrollBy = (dir: 1 | -1) => {
+  const scrollToIndex = useCallback((idx: number) => {
     const el = scrollerRef.current;
     if (!el) return;
-    el.scrollBy({ left: Math.round(el.clientWidth * 0.9) * dir, behavior: "smooth" });
+    const card = el.children[idx] as HTMLElement | undefined;
+    if (card) {
+      el.scrollTo({ left: card.offsetLeft - el.offsetLeft, behavior: "smooth" });
+    }
+  }, []);
+
+  const scrollBy = (dir: 1 | -1) => {
+    if (!kits.length) return;
+    const next = (activeIdx + dir + kits.length) % kits.length;
+    setActiveIdx(next);
+    scrollToIndex(next);
+  };
+
+  // Autoplay
+  useEffect(() => {
+    if (!isPlaying || kits.length < 2) return;
+    const id = window.setInterval(() => {
+      setActiveIdx((prev) => {
+        const next = (prev + 1) % kits.length;
+        scrollToIndex(next);
+        return next;
+      });
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [isPlaying, kits.length, scrollToIndex]);
+
+  // Track scroll position -> active index (touch / manual scroll)
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const children = Array.from(el.children) as HTMLElement[];
+        const center = el.scrollLeft + el.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        children.forEach((c, i) => {
+          const mid = c.offsetLeft - el.offsetLeft + c.clientWidth / 2;
+          const d = Math.abs(mid - center);
+          if (d < bestDist) {
+            bestDist = d;
+            best = i;
+          }
+        });
+        setActiveIdx(best);
+      });
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [kits.length]);
+
+  // Keyboard navigation when region has focus
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      scrollBy(1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      scrollBy(-1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setActiveIdx(0);
+      scrollToIndex(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      const last = kits.length - 1;
+      setActiveIdx(last);
+      scrollToIndex(last);
+    }
   };
 
   if (kits.length === 0) return null;
 
   return (
-    <section className="py-8 bg-gradient-to-br from-primary/5 via-accent/5 to-background">
+    <section
+      ref={regionRef}
+      className="py-8 bg-gradient-to-br from-primary/5 via-accent/5 to-background"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Kits École officiels — mis en avant"
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      onMouseEnter={() => setIsPlaying(false)}
+      onMouseLeave={() => setIsPlaying(true)}
+      onFocus={() => setIsPlaying(false)}
+      onBlur={() => setIsPlaying(true)}
+      onTouchStart={() => setIsPlaying(false)}
+    >
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-end justify-between gap-3 mb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-4 w-4 text-primary" />
+              <Sparkles className="h-4 w-4 text-primary animate-pulse" aria-hidden="true" />
               <Badge variant="secondary" className="text-[10px] uppercase tracking-wide">
                 Kits officiels
               </Badge>
@@ -85,14 +177,41 @@ const KitsHeroCarousel = () => {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <Link to="/kits-scolaires" className="text-xs sm:text-sm text-primary hover:underline font-medium">
+            <Link
+              to="/kits-scolaires"
+              className="text-xs sm:text-sm text-primary hover:underline font-medium"
+            >
               Tout voir
             </Link>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsPlaying((p) => !p)}
+              className="rounded-full h-8 w-8"
+              aria-label={isPlaying ? "Mettre en pause le défilement automatique" : "Reprendre le défilement automatique"}
+              aria-pressed={!isPlaying}
+            >
+              {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+            </Button>
             <div className="hidden sm:flex gap-1">
-              <Button variant="outline" size="icon" onClick={() => scrollBy(-1)} className="rounded-full h-8 w-8" aria-label="Précédent">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => scrollBy(-1)}
+                className="rounded-full h-8 w-8"
+                aria-label="Kit précédent"
+                aria-controls="kits-scroller"
+              >
                 <ChevronLeft size={16} />
               </Button>
-              <Button variant="outline" size="icon" onClick={() => scrollBy(1)} className="rounded-full h-8 w-8" aria-label="Suivant">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => scrollBy(1)}
+                className="rounded-full h-8 w-8"
+                aria-label="Kit suivant"
+                aria-controls="kits-scroller"
+              >
                 <ChevronRight size={16} />
               </Button>
             </div>
@@ -100,31 +219,39 @@ const KitsHeroCarousel = () => {
         </div>
 
         <div
+          id="kits-scroller"
           ref={scrollerRef}
-          className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-3 px-3 sm:mx-0 sm:px-0"
+          className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 focus:outline-none"
           style={{ scrollbarWidth: "thin" }}
+          aria-live="polite"
+          aria-atomic="false"
         >
-          {kits.map((kit) => {
+          {kits.map((kit, idx) => {
             const price = kit.discount_price ?? kit.total_price ?? 0;
+            const isActive = idx === activeIdx;
             return (
               <Link
                 key={kit.id}
                 to="/kits-scolaires"
-                className="snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[32%] lg:w-[24%] group"
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${idx + 1} sur ${kits.length} — ${kit.name}`}
+                aria-current={isActive ? "true" : undefined}
+                className="snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[32%] lg:w-[24%] group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
               >
-                <div className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all h-full flex flex-col">
+                <div className={`bg-card border rounded-lg overflow-hidden hover:shadow-lg transition-all h-full flex flex-col ${isActive ? "border-primary shadow-md" : "border-border"}`}>
                   <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                     {kit.image_url ? (
                       <SmartImage
                         src={kit.image_url}
-                        alt={kit.name}
+                        alt={`Kit ${kit.name} — ${kit.grade_level}${kit.school_name ? ` (${kit.school_name})` : ""}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         fallbackSrc="/placeholder.svg"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary via-primary/80 to-accent text-primary-foreground">
                         <div className="text-center px-4">
-                          <Package className="h-8 w-8 mx-auto mb-2" />
+                          <Package className="h-8 w-8 mx-auto mb-2" aria-hidden="true" />
                           <p className="font-display font-bold text-sm leading-tight">
                             {CATEGORY_LABELS[kit.category || ""] || "Kit École"}
                           </p>
@@ -133,7 +260,7 @@ const KitsHeroCarousel = () => {
                       </div>
                     )}
                     {kit.category && (
-                      <Badge className="absolute top-2 left-2 bg-background/95 text-foreground border text-[10px]">
+                      <Badge className="absolute top-2 left-2 bg-background/95 text-foreground border text-[10px] animate-fade-in">
                         {CATEGORY_LABELS[kit.category] || kit.category}
                       </Badge>
                     )}
@@ -157,6 +284,32 @@ const KitsHeroCarousel = () => {
             );
           })}
         </div>
+
+        {/* Indicateurs de page */}
+        {kits.length > 1 && (
+          <div
+            className="flex justify-center gap-1.5 mt-3"
+            role="tablist"
+            aria-label="Sélectionner un kit"
+          >
+            {kits.map((k, idx) => (
+              <button
+                key={k.id}
+                type="button"
+                role="tab"
+                aria-selected={idx === activeIdx}
+                aria-label={`Aller au kit ${idx + 1} sur ${kits.length}`}
+                onClick={() => {
+                  setActiveIdx(idx);
+                  scrollToIndex(idx);
+                }}
+                className={`h-1.5 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${
+                  idx === activeIdx ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

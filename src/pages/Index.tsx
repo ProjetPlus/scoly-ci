@@ -4,6 +4,7 @@ import FeaturedProductsCarousel from "@/components/FeaturedProductsCarousel";
 import FeaturedArticlesCarousel from "@/components/FeaturedArticlesCarousel";
 import FlashDeals from "@/components/FlashDeals";
 import KitsHeroCarousel from "@/components/KitsHeroCarousel";
+import JumiaCategoryTiles from "@/components/JumiaCategoryTiles";
 import HomeCategoryRows from "@/components/HomeCategoryRows";
 import NewFeaturesSection from "@/components/NewFeaturesSection";
 import SpacesSection from "@/components/SpacesSection";
@@ -31,6 +32,7 @@ const Index = () => {
       <Navbar />
       <HeroSection />
       <KitsHeroCarousel />
+      <JumiaCategoryTiles />
       <FlashDeals />
       <FeaturedProductsCarousel />
       <HomeCategoryRows />

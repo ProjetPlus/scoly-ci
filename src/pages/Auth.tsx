@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, User, AtSign, AlertTriangle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -293,24 +293,51 @@ const Auth = () => {
 
   // OAuth Google/Apple supprimé - Authentification email/password uniquement
 
-  // Portal identity — chaque chemin a sa propre couleur, son propre message.
-  const portal = requiresCaptcha
-    ? routePath === "/team"
-      ? {
-          label: "Portail Équipe Scoly",
-          tagline: "Administration · Modération · Commercial · Livraison",
-          bg: "bg-gradient-to-br from-slate-900 via-primary to-slate-900",
-          accent: "text-accent",
-        }
-      : {
-          label: "Portail Référent",
-          tagline: "Établissements · Associations · Partenaires validés",
-          bg: "bg-gradient-to-br from-primary via-primary/90 to-accent/40",
-          accent: "text-accent-foreground",
-        }
+  // Portal identity — chaque chemin a sa propre couleur, ses propres textes.
+  const isTeamPortal = routePath === "/team";
+  const isPartnerPortal = routePath === "/me";
+  const isClientPortal = !isTeamPortal && !isPartnerPortal;
+
+  // Sur les portails internes/partenaires, pas d'auto-inscription publique.
+  const allowSignup = isClientPortal;
+  useEffect(() => {
+    if (!allowSignup && !isLogin) setIsLogin(true);
+  }, [allowSignup, isLogin]);
+
+  const portal = isTeamPortal
+    ? {
+        label: "Portail Équipe Scoly",
+        tagline: "Administration · Modération · Commercial · Livraison",
+        subtitle: "Espace strictement réservé aux équipes internes Scoly.",
+        loginTitle: "Connexion Équipe",
+        loginCta: "Accéder à mon espace équipe",
+        identifierPlaceholder: "prenom.nom@scoly.ci",
+        passwordHint: "Identifiants fournis par votre responsable Scoly.",
+        bg: "bg-gradient-to-br from-slate-900 via-primary to-slate-900",
+        accent: "text-accent",
+      }
+    : isPartnerPortal
+    ? {
+        label: "Portail Référent",
+        tagline: "Écoles · Associations · Référents partenaires validés",
+        subtitle: "Réservé aux référents et partenaires officiellement validés par Scoly.",
+        loginTitle: "Connexion Référent",
+        loginCta: "Accéder à mon espace référent",
+        identifierPlaceholder: "referent@monetablissement.ci",
+        passwordHint: "Pas encore référent ? Contactez Scoly pour être validé.",
+        bg: "bg-gradient-to-br from-primary via-primary/90 to-accent/40",
+        accent: "text-accent-foreground",
+      }
     : {
         label: "Espace Client",
-        tagline: "Achats · Suivi des commandes · Historique · Fidélité",
+        tagline: "Achats · Suivi de commandes · Historique · Fidélité",
+        subtitle: isLogin
+          ? "Connectez-vous pour retrouver vos commandes et vos favoris."
+          : "Créez votre compte client Scoly en quelques secondes.",
+        loginTitle: isLogin ? "Connexion Client" : "Créer un compte client",
+        loginCta: isLogin ? "Se connecter" : "Créer mon compte",
+        identifierPlaceholder: "email@example.ci ou votre nom d'utilisateur",
+        passwordHint: "",
         bg: "bg-primary",
         accent: "text-primary-foreground",
       };
@@ -325,25 +352,16 @@ const Auth = () => {
           <p className="mt-2 text-xs sm:text-sm opacity-90">{portal.tagline}</p>
         </div>
         <div className="bg-card rounded-2xl shadow-lg p-8 border border-border">
-          {/* Logo */}
           <div className="flex justify-center mb-6">
             <Logo />
           </div>
 
-          {/* Title */}
           <h1 className="text-2xl font-display font-bold text-center text-foreground mb-2">
-            {isLogin ? t.auth.loginTitle : t.auth.signupTitle}
+            {portal.loginTitle}
           </h1>
           <p className="text-center text-muted-foreground mb-6 text-sm">
-            {requiresCaptcha
-              ? routePath === "/team"
-                ? "Accès réservé aux équipes internes Scoly."
-                : "Accès réservé aux référents & partenaires validés."
-              : isLogin
-              ? "Connectez-vous à votre compte Scoly."
-              : "Créez votre compte Scoly."}
+            {portal.subtitle}
           </p>
-
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -427,7 +445,9 @@ const Auth = () => {
 
             {isLogin && (
               <div>
-                <Label htmlFor="identifier">Email ou nom d'utilisateur</Label>
+                <Label htmlFor="identifier">
+                  {isClientPortal ? "Email ou nom d'utilisateur" : "Email professionnel"}
+                </Label>
                 <div className="relative mt-1">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                   <Input
@@ -436,10 +456,14 @@ const Auth = () => {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     className="pl-10"
-                    placeholder="email@example.ci ou Admin"
+                    placeholder={portal.identifierPlaceholder}
                     required
+                    autoComplete="username"
                   />
                 </div>
+                {portal.passwordHint && !isClientPortal && (
+                  <p className="text-[11px] text-muted-foreground mt-1">{portal.passwordHint}</p>
+                )}
                 {errors.identifier && (
                   <p className="text-sm text-destructive mt-1">{errors.identifier}</p>
                 )}
@@ -583,23 +607,34 @@ const Auth = () => {
             )}
 
             <Button type="submit" variant="hero" className="w-full" disabled={loading || (requiresCaptcha && !captchaValid)}>
-              {loading ? t.common.loading : isLogin ? t.auth.loginButton : t.auth.signupButton}
+              {loading ? t.common.loading : portal.loginCta}
             </Button>
-
-            {/* OAuth supprimé - Authentification email/password uniquement */}
           </form>
 
-          {/* Toggle */}
-          <p className="text-center text-muted-foreground mt-6">
-            {isLogin ? t.auth.noAccount : t.auth.hasAccount}{" "}
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary font-medium hover:underline"
-            >
-              {isLogin ? t.auth.signupButton : t.auth.loginButton}
-            </button>
-          </p>
+          {/* Toggle inscription — Clients uniquement */}
+          {allowSignup ? (
+            <p className="text-center text-muted-foreground mt-6 text-sm">
+              {isLogin ? t.auth.noAccount : t.auth.hasAccount}{" "}
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-primary font-medium hover:underline"
+              >
+                {isLogin ? "Créer un compte client" : "Se connecter"}
+              </button>
+            </p>
+          ) : (
+            <p className="text-center text-muted-foreground mt-6 text-xs">
+              {isTeamPortal
+                ? "Vous n'avez pas encore d'accès équipe ? Contactez votre responsable Scoly."
+                : "Vous souhaitez devenir référent partenaire ? "}
+              {isPartnerPortal && (
+                <Link to="/contact" className="text-primary font-medium hover:underline">
+                  Contactez-nous
+                </Link>
+              )}
+            </p>
+          )}
         </div>
       </div>
     </div>
