@@ -7,10 +7,10 @@ import Auth from "@/pages/Auth";
 vi.mock("@/contexts/AuthContext", () => ({
   useAuth: () => ({ signIn: vi.fn(), signUp: vi.fn(), user: null }),
 }));
-const tProxy: any = new Proxy(() => "", { get: () => tProxy, apply: () => "" });
-vi.mock("@/i18n/LanguageContext", () => ({
-  useLanguage: () => ({ t: tProxy, language: "fr" }),
-}));
+vi.mock("@/i18n/LanguageContext", () => {
+  const tProxy: any = new Proxy(() => "", { get: () => tProxy, apply: () => "" });
+  return { useLanguage: () => ({ t: tProxy, language: "fr" }) };
+});
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: { auth: { getUser: () => Promise.resolve({ data: { user: null } }) }, from: () => ({ select: () => ({ eq: () => Promise.resolve({ data: [] }) }) }) },
 }));
