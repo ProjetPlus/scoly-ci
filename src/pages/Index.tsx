@@ -32,6 +32,7 @@ const Index = () => {
       <Navbar />
       <HeroSection />
       <KitsHeroCarousel />
+      <JumiaCategoryTiles />
       <FlashDeals />
       <FeaturedProductsCarousel />
       <HomeCategoryRows />
