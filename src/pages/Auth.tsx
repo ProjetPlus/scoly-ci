@@ -293,12 +293,40 @@ const Auth = () => {
 
   // OAuth Google/Apple supprimé - Authentification email/password uniquement
 
+  // Portal identity — chaque chemin a sa propre couleur, son propre message.
+  const portal = requiresCaptcha
+    ? routePath === "/team"
+      ? {
+          label: "Portail Équipe Scoly",
+          tagline: "Administration · Modération · Commercial · Livraison",
+          bg: "bg-gradient-to-br from-slate-900 via-primary to-slate-900",
+          accent: "text-accent",
+        }
+      : {
+          label: "Portail Référent",
+          tagline: "Établissements · Associations · Partenaires validés",
+          bg: "bg-gradient-to-br from-primary via-primary/90 to-accent/40",
+          accent: "text-accent-foreground",
+        }
+    : {
+        label: "Espace Client",
+        tagline: "Achats · Suivi des commandes · Historique · Fidélité",
+        bg: "bg-primary",
+        accent: "text-primary-foreground",
+      };
+
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center p-4">
+    <div className={`min-h-screen ${portal.bg} flex items-center justify-center p-4`}>
       <div className="w-full max-w-md">
+        <div className={`mb-4 text-center ${portal.accent}`}>
+          <span className="inline-block px-3 py-1 rounded-full bg-background/10 backdrop-blur border border-background/20 text-xs font-semibold uppercase tracking-wider">
+            {portal.label}
+          </span>
+          <p className="mt-2 text-xs sm:text-sm opacity-90">{portal.tagline}</p>
+        </div>
         <div className="bg-card rounded-2xl shadow-lg p-8 border border-border">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6">
             <Logo />
           </div>
 
@@ -306,9 +334,16 @@ const Auth = () => {
           <h1 className="text-2xl font-display font-bold text-center text-foreground mb-2">
             {isLogin ? t.auth.loginTitle : t.auth.signupTitle}
           </h1>
-          <p className="text-center text-muted-foreground mb-8">
-            {isLogin ? "Connectez-vous à votre compte Scoly" : "Créez votre compte Scoly"}
+          <p className="text-center text-muted-foreground mb-6 text-sm">
+            {requiresCaptcha
+              ? routePath === "/team"
+                ? "Accès réservé aux équipes internes Scoly."
+                : "Accès réservé aux référents & partenaires validés."
+              : isLogin
+              ? "Connectez-vous à votre compte Scoly."
+              : "Créez votre compte Scoly."}
           </p>
+
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">

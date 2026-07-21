@@ -26,7 +26,8 @@ import {
   FileText,
   Menu,
   UserPlus,
-  Zap
+  Zap,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +64,7 @@ import ProviderMonitoring from "@/components/admin/ProviderMonitoring";
 import ZonesManagement from "@/components/admin/ZonesManagement";
 import SchoolKitsManagement from "@/components/admin/SchoolKitsManagement";
 import SmartImage from "@/components/SmartImage";
+import ProductReclassifier from "@/components/admin/ProductReclassifier";
 import { sortCategories, getCategoryInitials } from "@/lib/categoryAssets";
 
 import { Share2 } from "lucide-react";
@@ -98,7 +100,8 @@ type TabType =
   | "email_analytics"
   | "email_monitoring"
   | "zones"
-  | "school_kits";
+  | "school_kits"
+  | "reclassify";
 
 const Admin = () => {
   useLanguage();
@@ -120,6 +123,7 @@ const Admin = () => {
       label: "Catalogue & Ventes",
       items: [
         { id: "products", label: "Produits", icon: Package },
+        { id: "reclassify", label: "Reclassement IA", icon: Sparkles },
         { id: "school_kits", label: "Kit École", icon: Package },
         { id: "categories", label: "Catégories", icon: FolderTree },
         { id: "orders", label: "Commandes", icon: ShoppingBag },
@@ -316,6 +320,7 @@ const Admin = () => {
           {activeTab === "stats" && <AdvancedStats />}
           {activeTab === "sharestats" && <ShareStatsTab />}
           {activeTab === "products" && <ProductsTab />}
+          {activeTab === "reclassify" && <ProductReclassifier />}
           {activeTab === "categories" && <CategoriesTab />}
           {activeTab === "orders" && <OrdersTab />}
           {activeTab === "payments" && <PaymentsTab />}
