@@ -267,15 +267,19 @@ const KitsHeroCarousel = () => {
             const price = kit.discount_price ?? kit.total_price ?? 0;
             const isActive = idx === activeIdx;
             return (
-              <Link
+              <div
                 key={kit.id}
-                to="/kits-scolaires"
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${idx + 1} sur ${kits.length} — ${kit.name}`}
                 aria-current={isActive ? "true" : undefined}
-                className="snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[32%] lg:w-[24%] group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+                className="snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[32%] lg:w-[24%]"
               >
+                <Link
+                  to="/kits-scolaires"
+                  className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg h-full"
+                  aria-label={`Voir le kit ${kit.name}`}
+                >
                 <div className={`bg-card border rounded-lg overflow-hidden hover:shadow-lg transition-all h-full flex flex-col ${isActive ? "border-primary shadow-md" : "border-border"}`}>
                   <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                     {kit.image_url ? (
@@ -317,7 +321,8 @@ const KitsHeroCarousel = () => {
                     )}
                   </div>
                 </div>
-              </Link>
+                </Link>
+              </div>
             );
           })}
         </div>
