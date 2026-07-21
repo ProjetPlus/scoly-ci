@@ -143,6 +143,40 @@ const KitsHeroCarousel = () => {
     }
   };
 
+  // Swipe tactile — préserve le focus, bloque le scroll page en horizontal
+  const touchRef = useRef<{ x: number; y: number; locked: null | "h" | "v" } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    setIsPlaying(false);
+    const t = e.touches[0];
+    touchRef.current = { x: t.clientX, y: t.clientY, locked: null };
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    const s = touchRef.current;
+    if (!s) return;
+    const t = e.touches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (s.locked === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      s.locked = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+    }
+    if (s.locked === "h" && e.cancelable) {
+      // Empêche le scroll vertical de la page pendant un swipe horizontal
+      e.preventDefault();
+    }
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touchRef.current;
+    touchRef.current = null;
+    if (!s || s.locked !== "h") return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - s.x;
+    const THRESHOLD = 40;
+    if (Math.abs(dx) < THRESHOLD) return;
+    // Conserve le focus sur la région pour que le clavier reste utilisable
+    regionRef.current?.focus({ preventScroll: true });
+    scrollBy(dx < 0 ? 1 : -1);
+  };
+
   if (kits.length === 0) return null;
 
   return (
