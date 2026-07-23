@@ -2105,6 +2105,30 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          module: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          id?: string
+          module: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          module?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: []
+      }
       school_loyalty: {
         Row: {
           created_at: string | null
@@ -3279,6 +3303,10 @@ export type Database = {
           total_spent: number
         }[]
       }
+      has_permission: {
+        Args: { _action?: string; _module: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -3394,7 +3422,16 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user" | "vendor" | "delivery"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "vendor"
+        | "delivery"
+        | "super_admin"
+        | "commercial"
+        | "comptable"
+        | "referent"
       order_status:
         | "pending"
         | "confirmed"
@@ -3529,7 +3566,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user", "vendor", "delivery"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "vendor",
+        "delivery",
+        "super_admin",
+        "commercial",
+        "comptable",
+        "referent",
+      ],
       order_status: [
         "pending",
         "confirmed",
