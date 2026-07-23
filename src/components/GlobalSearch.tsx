@@ -54,7 +54,15 @@ export const GlobalSearch = () => {
       setLoading(true);
       try {
         const searchResults: SearchResult[] = [];
-        const searchTerm = `%${query}%`;
+        // Sanitize: strip PostgREST filter metacharacters that could break out of the
+        // .or() expression (commas separate filters; parens group them; * is the wildcard).
+        const safeQuery = query.replace(/[,()*\\]/g, " ").trim();
+        if (!safeQuery) {
+          setResults([]);
+          return;
+        }
+        const searchTerm = `%${safeQuery}%`;
+
 
         // Search products
         if (activeFilter === "all" || activeFilter === "products") {
