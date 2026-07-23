@@ -3406,6 +3406,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      scoly_suggest_category_id: {
+        Args: {
+          p_description: string
+          p_education_level: string
+          p_name: string
+          p_product_type: string
+          p_subject: string
+        }
+        Returns: string
+      }
       unsubscribe_newsletter: { Args: { _token: string }; Returns: boolean }
       update_campaign_event_counts: {
         Args: { _event: string; _provider_message_id: string }
