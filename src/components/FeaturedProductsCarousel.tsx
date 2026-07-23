@@ -183,13 +183,6 @@ const FeaturedProductsCarousel = () => {
           ))}
         </div>
 
-        <div className="text-center mt-5">
-          <Link to="/shop">
-            <Button variant="outline" size="sm">
-              Voir tous les produits
-            </Button>
-          </Link>
-        </div>
       </div>
     </section>
   );
