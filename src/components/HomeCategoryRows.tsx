@@ -41,8 +41,8 @@ const HomeCategoryRows = () => {
       const { data: cats } = await supabase
         .from("categories")
         .select("id,slug,name_fr")
-        .limit(20);
-      const sorted = sortCategories((cats || []) as any[]).slice(0, 6);
+        .limit(50);
+      const sorted = sortCategories((cats || []) as any[]);
       if (sorted.length === 0) {
         if (!cancelled) setRows([]);
         return;
