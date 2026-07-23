@@ -58,9 +58,9 @@ const DeliveryDashboard = () => {
       .select("role")
       .eq("user_id", user.id);
 
-    // Check if user has delivery, admin, or moderator role
+    // Check if user has delivery/commercial, admin, or moderator role
     const isDelivery = roles?.some((r) => 
-      r.role === "delivery" || r.role === "admin" || r.role === "moderator"
+      r.role === "delivery" || r.role === "commercial" || r.role === "admin" || r.role === "super_admin" || r.role === "moderator"
     );
     setHasAccess(!!isDelivery);
 

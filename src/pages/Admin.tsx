@@ -774,7 +774,7 @@ const DeliveriesTab = () => {
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("user_id")
-      .eq("role", "delivery");
+      .in("role", ["commercial", "delivery"]);
     
     if (roleData && roleData.length > 0) {
       const userIds = roleData.map(r => r.user_id);

@@ -16,7 +16,7 @@ const MentionsLegales = () => (
           <ul className="list-disc pl-6 space-y-1">
             <li><strong>Raison sociale :</strong> Scoly SARL</li>
             <li><strong>Siège social :</strong> Abidjan, Côte d'Ivoire</li>
-            <li><strong>Téléphone :</strong> +225 07 58 46 59 33</li>
+            <li><strong>Téléphone :</strong> +225 07 02 58 44 57</li>
             <li><strong>Email :</strong> contact@scoly.ci</li>
             <li><strong>Directeur de la publication :</strong> Inocent KOFFI</li>
             <li><strong>RCCM :</strong> CI-ABJ-2024-B-XXXXX</li>

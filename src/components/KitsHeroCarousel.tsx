@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Package, Sparkles, Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Package, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +38,7 @@ const formatFCFA = (v: number) =>
 const KitsHeroCarousel = () => {
   const [kits, setKits] = useState<Kit[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const isPlaying = true;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const regionRef = useRef<HTMLElement>(null);
 
@@ -146,7 +146,6 @@ const KitsHeroCarousel = () => {
   // Swipe tactile — préserve le focus, bloque le scroll page en horizontal
   const touchRef = useRef<{ x: number; y: number; locked: null | "h" | "v" } | null>(null);
   const onTouchStart = (e: React.TouchEvent) => {
-    setIsPlaying(false);
     const t = e.touches[0];
     touchRef.current = { x: t.clientX, y: t.clientY, locked: null };
   };
@@ -188,10 +187,6 @@ const KitsHeroCarousel = () => {
       aria-label="Kits École officiels — mis en avant"
       tabIndex={0}
       onKeyDown={onKeyDown}
-      onMouseEnter={() => setIsPlaying(false)}
-      onMouseLeave={() => setIsPlaying(true)}
-      onFocus={() => setIsPlaying(false)}
-      onBlur={() => setIsPlaying(true)}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -220,16 +215,6 @@ const KitsHeroCarousel = () => {
             >
               Tout voir
             </Link>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsPlaying((p) => !p)}
-              className="rounded-full h-8 w-8"
-              aria-label={isPlaying ? "Mettre en pause le défilement automatique" : "Reprendre le défilement automatique"}
-              aria-pressed={!isPlaying}
-            >
-              {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-            </Button>
             <div className="hidden sm:flex gap-1">
               <Button
                 variant="outline"

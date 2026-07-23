@@ -177,7 +177,7 @@ function AssignmentsTab() {
     const [zRes, aRes, rRes] = await Promise.all([
       supabase.from("zones").select("*").order("name"),
       supabase.from("commercial_zones").select("*"),
-      supabase.from("user_roles").select("user_id").in("role", ["delivery", "vendor"]),
+      supabase.from("user_roles").select("user_id").in("role", ["commercial", "delivery", "vendor"]),
     ]);
     setZones((zRes.data as any) || []);
     setAssignments((aRes.data as any) || []);
@@ -268,7 +268,7 @@ function AvailabilityTab() {
   const load = async () => {
     const [aRes, rRes] = await Promise.all([
       supabase.from("commercial_availability").select("*").order("start_date", { ascending: false }),
-      supabase.from("user_roles").select("user_id").in("role", ["delivery", "vendor"]),
+      supabase.from("user_roles").select("user_id").in("role", ["commercial", "delivery", "vendor"]),
     ]);
     setItems((aRes.data as any) || []);
     const ids = [...new Set((rRes.data || []).map((r: any) => r.user_id))];

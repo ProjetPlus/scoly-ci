@@ -27,7 +27,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-type AppRole = 'admin' | 'moderator' | 'user' | 'vendor' | 'delivery';
+type AppRole = 'super_admin' | 'admin' | 'moderator' | 'commercial' | 'comptable' | 'referent' | 'user' | 'vendor' | 'delivery';
+
+const ROLE_OPTIONS: AppRole[] = ['super_admin','admin','moderator','commercial','comptable','referent','user'];
 
 interface UserWithRoles {
   id: string;
@@ -300,14 +302,14 @@ const UserManagement = () => {
       // Always insert at least one role (default to 'user' if none selected)
       const rolesToInsert = formData.roles.length > 0 ? formData.roles : ['user'];
       const validDbRoles = rolesToInsert.filter((role) =>
-        ["admin", "moderator", "user", "vendor", "delivery"].includes(role)
+        ROLE_OPTIONS.includes(role as AppRole) || ['vendor','delivery'].includes(role)
       );
 
       console.log('Roles to insert:', validDbRoles);
 
       const roleInserts = validDbRoles.map((role) => ({
         user_id: editingUser.id,
-        role: role as "admin" | "moderator" | "user" | "vendor" | "delivery",
+        role: role as AppRole,
       }));
 
       if (roleInserts.length > 0) {
@@ -420,14 +422,18 @@ const UserManagement = () => {
 
   const getRoleBadge = (role: AppRole) => {
     const roleConfig: Record<AppRole, { label: string; icon: typeof ShieldAlert; className: string }> = {
+      super_admin: { label: 'Super Admin', icon: ShieldAlert, className: "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400" },
       admin: { label: t.roleAdmin, icon: ShieldAlert, className: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" },
       moderator: { label: t.roleModerator, icon: ShieldCheck, className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
+      commercial: { label: 'Commercial / Livreur', icon: Truck, className: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
+      comptable: { label: 'Comptable', icon: Shield, className: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" },
+      referent: { label: 'Référent', icon: Shield, className: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400" },
       vendor: { label: t.roleVendor, icon: Shield, className: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
-      delivery: { label: t.roleDelivery, icon: Shield, className: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
+      delivery: { label: t.roleDelivery, icon: Truck, className: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
       user: { label: t.roleUser, icon: User, className: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400" }
     };
 
-    const config = roleConfig[role];
+    const config = roleConfig[role] ?? roleConfig.user;
     const Icon = config.icon;
 
     return (
@@ -537,7 +543,7 @@ const UserManagement = () => {
               <div>
                 <Label className="mb-3 block">{t.roles}</Label>
                 <div className="grid grid-cols-2 gap-3">
-                  {(['admin', 'moderator', 'vendor', 'delivery', 'user'] as AppRole[]).map(role => (
+                  {ROLE_OPTIONS.map(role => (
                     <label 
                       key={role} 
                       className="flex items-center gap-2 p-3 rounded-lg border border-border hover:bg-muted cursor-pointer transition-colors"

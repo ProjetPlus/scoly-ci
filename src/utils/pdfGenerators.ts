@@ -44,7 +44,7 @@ function addFooter(doc: jsPDF, page: number, total: number) {
   doc.setTextColor(...COLORS.muted);
   doc.text(`Scoly — Document confidentiel — ${new Date().toLocaleDateString("fr-FR")}`, 15, y + 5);
   doc.text(`Page ${page}/${total}`, 195, y + 5, { align: "right" });
-  doc.text("Contact : inocent.koffi@agricapital.ci | +225 07 58 46 59 33", 105, y + 5, { align: "center" });
+  doc.text("Contact : inocent.koffi@agricapital.ci | +225 07 02 58 44 57", 105, y + 5, { align: "center" });
 }
 
 function sectionTitle(doc: jsPDF, y: number, text: string): number {

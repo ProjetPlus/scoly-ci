@@ -98,7 +98,7 @@ const VendorDashboard = () => {
       .eq('user_id', user.id);
 
     const hasAccess = roles?.some(r => 
-      r.role === 'admin' || r.role === 'vendor'
+      r.role === 'super_admin' || r.role === 'admin' || r.role === 'commercial' || r.role === 'vendor'
     );
 
     if (!hasAccess) {

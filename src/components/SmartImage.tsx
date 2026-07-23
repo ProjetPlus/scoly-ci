@@ -25,13 +25,13 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
   },
   ref
 ) {
-  const effectiveSrc = src || fallbackSrc;
+  const effectiveSrc = normalizeImageSrc(src, fallbackSrc);
   const [currentSrc, setCurrentSrc] = useState(effectiveSrc);
   const [hasError, setHasError] = useState(false);
 
   // Reset when src changes (fix carousel issue)
   useEffect(() => {
-    const newSrc = src || fallbackSrc;
+    const newSrc = normalizeImageSrc(src, fallbackSrc);
     setCurrentSrc(newSrc);
     setHasError(false);
   }, [src, fallbackSrc]);
@@ -46,9 +46,7 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
 
   // priority images load eagerly for best LCP
   const resolvedLoading = loading ?? (priority ? "eager" : "lazy");
-  const optimizedSources = getOptimizedSources(currentSrc);
-
-  const image = (
+  return (
     <img
       {...props}
       ref={ref}
@@ -60,25 +58,15 @@ const SmartImage = forwardRef<HTMLImageElement, SmartImageProps>(function SmartI
       onError={handleError}
     />
   );
-
-  if (!optimizedSources) return image;
-
-  return (
-    <picture>
-      <source srcSet={optimizedSources.avif} type="image/avif" />
-      <source srcSet={optimizedSources.webp} type="image/webp" />
-      {image}
-    </picture>
-  );
 });
 
-function getOptimizedSources(src: string) {
-  if (!src.startsWith("/") || src.startsWith("//") || src.startsWith("/__l5e/")) return null;
-  if (src === "/placeholder.svg") return null;
-  const match = src.match(/\.(jpe?g|png)$/i);
-  if (!match) return null;
-  const base = src.slice(0, -match[0].length);
-  return { avif: `${base}.avif`, webp: `${base}.webp` };
+function normalizeImageSrc(src?: string | null, fallbackSrc = "/placeholder.svg") {
+  const value = (src || "").trim();
+  if (!value || value === "null" || value === "undefined") return fallbackSrc;
+  if (value.startsWith("//")) return `https:${value}`;
+  if (/^https?:\/\//i.test(value) || value.startsWith("data:") || value.startsWith("blob:")) return value;
+  if (value.startsWith("/")) return value;
+  return `/${value.replace(/^\/+/, "")}`;
 }
 
 SmartImage.displayName = "SmartImage";

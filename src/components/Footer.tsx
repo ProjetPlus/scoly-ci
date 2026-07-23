@@ -30,9 +30,8 @@ const Footer = () => {
       ],
     },
     {
-      title: "À propos de Scoly",
+      title: "Scoly",
       links: [
-        { label: "Qui sommes-nous", href: "/about" },
         { label: "Kit École", href: "/kits-scolaires" },
         { label: "Programme parrainage", href: "/parrainage" },
         { label: "Actualités", href: "/actualites" },
@@ -97,8 +96,8 @@ const Footer = () => {
               <a href="mailto:contact@scoly.ci" className="flex items-center gap-2 text-primary-foreground/80 hover:text-secondary transition-colors">
                 <Mail size={15} /> contact@scoly.ci
               </a>
-              <a href="tel:+2250758465933" className="flex items-center gap-2 text-primary-foreground/80 hover:text-secondary transition-colors">
-                <Phone size={15} /> +225 07 58 46 59 33
+              <a href="tel:+2250702584457" className="flex items-center gap-2 text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Phone size={15} /> +225 07 02 58 44 57
               </a>
               <p className="flex items-center gap-2 text-primary-foreground/80">
                 <MapPin size={15} /> Abidjan, Côte d'Ivoire

@@ -80,8 +80,8 @@ const defaultFAQs: FAQItem[] = [
     id: "7",
     question_fr: "Comment contacter le service client ?",
     question_en: "How do I contact customer service?",
-    answer_fr: "Vous pouvez nous contacter via WhatsApp au +225 07 58 46 59 33, par email à contact@scoly.ci, ou via le formulaire de contact sur notre site.",
-    answer_en: "You can contact us via WhatsApp at +225 07 58 46 59 33, by email at contact@scoly.ci, or via the contact form on our website.",
+    answer_fr: "Vous pouvez nous contacter via WhatsApp au +225 07 02 58 44 57, par email à contact@scoly.ci, ou via le formulaire de contact sur notre site.",
+    answer_en: "You can contact us via WhatsApp at +225 07 02 58 44 57, by email at contact@scoly.ci, or via the contact form on our website.",
     category: "support",
     sort_order: 7
   },
@@ -267,8 +267,8 @@ const FAQ = () => {
                   <h3 className="font-semibold mb-2">WhatsApp</h3>
                   <p className="text-sm text-muted-foreground mb-4">Réponse rapide</p>
                   <Button variant="outline" asChild className="w-full">
-                    <a href="https://wa.me/2250758465933" target="_blank" rel="noopener noreferrer">
-                      +225 07 58 46 59 33
+                    <a href="https://wa.me/2250702584457" target="_blank" rel="noopener noreferrer">
+                      +225 07 02 58 44 57
                     </a>
                   </Button>
                 </CardContent>
@@ -297,7 +297,7 @@ const FAQ = () => {
                   <h3 className="font-semibold mb-2">Téléphone</h3>
                   <p className="text-sm text-muted-foreground mb-4">Lun-Ven 8h-18h</p>
                   <Button variant="outline" asChild className="w-full">
-                    <a href="tel:+2250758465933">
+                    <a href="tel:+2250702584457">
                       Appeler
                     </a>
                   </Button>

@@ -3,7 +3,19 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import PageLoader from "@/components/PageLoader";
 
-type AppRole = "admin" | "moderator" | "user" | "vendor" | "delivery";
+type AppRole =
+  | "super_admin"
+  | "admin"
+  | "moderator"
+  | "user"
+  | "vendor"
+  | "delivery"
+  | "commercial"
+  | "comptable"
+  | "referent"
+  | "association"
+  | "school"
+  | "school_admin";
 
 interface RoleGuardProps {
   children: ReactNode;

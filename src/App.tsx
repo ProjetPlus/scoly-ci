@@ -23,7 +23,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Shop = lazy(() => import("./pages/Shop"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Checkout = lazy(() => import("./pages/Checkout"));
-const About = lazy(() => import("./pages/About"));
+
 const Contact = lazy(() => import("./pages/Contact"));
 const Account = lazy(() => import("./pages/Account"));
 const Admin = lazy(() => import("./pages/Admin"));
@@ -60,11 +60,19 @@ const Forbidden = ({ title = "Accès refusé (403)" }: { title?: string }) => (
   </main>
 );
 
+const TEAM_ROLES = ["moderator", "commercial", "comptable", "vendor", "delivery"];
+const PARTNER_ROLES = ["referent", "association", "school", "school_admin"];
+const ADMIN_ROLES = ["super_admin", "admin"];
+
 const TeamAccess = () => {
   const { user, loading, rolesLoading, roles } = useAuth();
   if (loading || (user && rolesLoading)) return <PageLoader />;
   if (!user) return <Auth />;
-  return roles.some((r) => ["admin", "moderator", "vendor", "delivery"].includes(r))
+  // Super admins et admins vont directement à /admin (accès plateforme complet).
+  if (roles.some((r) => ADMIN_ROLES.includes(r))) {
+    return <Navigate to="/admin" replace />;
+  }
+  return roles.some((r) => TEAM_ROLES.includes(r))
     ? <TeamDashboard />
     : <Forbidden title="Espace équipe interne réservé" />;
 };
@@ -73,12 +81,12 @@ const PartnerAccess = () => {
   const { user, loading, rolesLoading, roles } = useAuth();
   if (loading || (user && rolesLoading)) return <PageLoader />;
   if (!user) return <Auth />;
-  // Admins & modérateurs ont aussi accès aux espaces partenaires pour supervision.
-  return roles.some((r) =>
-    ["admin", "moderator", "vendor", "referent", "association", "school", "school_admin"].includes(r)
-  )
-    ? <Account />
-    : <Forbidden title="Espace partenaire réservé" />;
+  // Séparation stricte : /me = espace CLIENT uniquement.
+  if (roles.some((r) => ADMIN_ROLES.includes(r))) return <Navigate to="/admin" replace />;
+  if (roles.some((r) => TEAM_ROLES.includes(r))) return <Navigate to="/team" replace />;
+  if (roles.some((r) => PARTNER_ROLES.includes(r))) return <Navigate to="/parrainage" replace />;
+  // Seul le rôle client (user) — ou l'absence de rôle privilégié — accède ici.
+  return <Account />;
 };
 
 const queryClient = new QueryClient({
@@ -123,15 +131,15 @@ const App = () => (
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/panier" element={<Cart />} />
                       <Route path="/checkout" element={<Checkout />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/a-propos" element={<About />} />
+                      <Route path="/about" element={<Navigate to="/contact" replace />} />
+                      <Route path="/a-propos" element={<Navigate to="/contact" replace />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/account" element={<RoleGuard><Account /></RoleGuard>} />
                       <Route path="/compte" element={<RoleGuard><Account /></RoleGuard>} />
-                      <Route path="/admin" element={<RoleGuard allow={["admin"]} loginRedirect="/team"><Admin /></RoleGuard>} />
+                      <Route path="/admin" element={<RoleGuard allow={["admin","super_admin"]} loginRedirect="/team"><Admin /></RoleGuard>} />
                       <Route path="/actualites" element={<Actualites />} />
-                      <Route path="/actualites/write" element={<RoleGuard allow={["admin","moderator","user"]}><WriteArticle /></RoleGuard>} />
-                      <Route path="/actualites/edit/:id" element={<RoleGuard allow={["admin","moderator","user"]}><WriteArticle /></RoleGuard>} />
+                      <Route path="/actualites/write" element={<RoleGuard allow={["super_admin","admin","moderator","user"]}><WriteArticle /></RoleGuard>} />
+                      <Route path="/actualites/edit/:id" element={<RoleGuard allow={["super_admin","admin","moderator","user"]}><WriteArticle /></RoleGuard>} />
                       <Route path="/actualites/:id" element={<ArticleDetail />} />
                       <Route path="/team" element={<TeamAccess />} />
                       
@@ -146,6 +154,7 @@ const App = () => (
                       <Route path="/auth/reset-password" element={<ResetPassword />} />
                       <Route path="/kits-scolaires" element={<KitsEcole />} />
                       <Route path="/me" element={<PartnerAccess />} />
+                      <Route path="/client" element={<Navigate to="/me" replace />} />
                       <Route path="/parrainage" element={<Referral />} />
                       <Route path="/livraison-retours" element={<DeliveryReturns />} />
                       <Route path="/livraison" element={<DeliveryReturns />} />

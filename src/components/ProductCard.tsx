@@ -17,6 +17,7 @@ export interface ProductCardData {
   discount_percent?: number;
   stock: number;
   image_url: string | null;
+  images?: string[] | null;
   is_featured?: boolean;
   free_shipping?: boolean;
   created_at?: string | null;
@@ -59,7 +60,7 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
         aria-label={name}
       >
         <SmartImage
-          src={product.image_url}
+          src={product.image_url || product.images?.[0] || null}
           alt={name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           fallbackSrc="/placeholder.svg"

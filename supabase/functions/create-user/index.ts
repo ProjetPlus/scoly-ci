@@ -67,7 +67,7 @@ serve(async (req) => {
       .from('user_roles')
       .select('role')
       .eq('user_id', callerUser.id)
-      .eq('role', 'admin');
+      .in('role', ['super_admin', 'admin']);
 
     if (!callerRoles || callerRoles.length === 0) {
       return new Response(JSON.stringify({ error: 'Accès admin requis' }), {
@@ -126,9 +126,10 @@ serve(async (req) => {
     }
 
     // Assign roles
+    const VALID_ROLES = ['super_admin','admin','moderator','commercial','comptable','referent','user','vendor','delivery'];
     const rolesToAssign = roles && roles.length > 0 ? roles : ['user'];
     for (const role of rolesToAssign) {
-      if (['admin', 'moderator', 'user', 'vendor', 'delivery'].includes(role)) {
+      if (VALID_ROLES.includes(role)) {
         const { error: roleError } = await supabaseAdmin
           .from('user_roles')
           .insert({

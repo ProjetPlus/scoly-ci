@@ -1,17 +1,12 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeaturedProductsCarousel from "@/components/FeaturedProductsCarousel";
-import FeaturedArticlesCarousel from "@/components/FeaturedArticlesCarousel";
 import FlashDeals from "@/components/FlashDeals";
 import KitsHeroCarousel from "@/components/KitsHeroCarousel";
-import JumiaCategoryTiles from "@/components/JumiaCategoryTiles";
+
 import HomeCategoryRows from "@/components/HomeCategoryRows";
-import NewFeaturesSection from "@/components/NewFeaturesSection";
-import SpacesSection from "@/components/SpacesSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import PaymentSection from "@/components/PaymentSection";
-import StatsSection from "@/components/StatsSection";
-import CTASection from "@/components/CTASection";
+import TrustStrip from "@/components/TrustStrip";
+
 import Footer from "@/components/Footer";
 import FreeShippingPopup from "@/components/FreeShippingPopup";
 import SEOHead from "@/components/SEOHead";
@@ -30,21 +25,17 @@ const Index = () => {
         keywords={["fournitures scolaires", "bureautique", "Côte d'Ivoire", "Abidjan", "livraison gratuite", "Scoly"]}
       />
       <Navbar />
+      {/* 1. Hero commercial (promo + catégories + actualités) */}
       <HeroSection />
+      {/* 2. Kits École — carrousel premium juste après le hero */}
       <KitsHeroCarousel />
-      <JumiaCategoryTiles />
+      {/* 3. Boutique directement sur la home */}
       <FlashDeals />
       <FeaturedProductsCarousel />
       <HomeCategoryRows />
-      <NewFeaturesSection />
       <RecentlyViewed />
-      <SpacesSection />
-      <FeaturedArticlesCarousel />
-      <FeaturesSection />
-      <StatsSection />
-      <PaymentSection />
-
-      <CTASection />
+      {/* 4. Réassurance avant le footer */}
+      <TrustStrip />
       <Footer />
       <FreeShippingPopup />
     </main>
@@ -52,4 +43,3 @@ const Index = () => {
 };
 
 export default Index;
-

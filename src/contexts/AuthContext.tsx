@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return nextRoles;
       });
       setIsAdmin((prev) => {
-        const next = nextRoles.includes('admin');
+        const next = nextRoles.includes('admin') || nextRoles.includes('super_admin');
         return prev === next ? prev : next;
       });
     } finally {
@@ -74,9 +74,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const getDashboardPath = () => {
-    if (roles.some((role) => ['admin', 'moderator', 'vendor', 'delivery'].includes(role))) return '/team';
-    if (roles.some((role) => ['referent', 'association', 'school', 'school_admin'].includes(role))) return '/me';
-    return '/account';
+    if (roles.some((role) => ['super_admin', 'admin'].includes(role))) return '/admin';
+    if (roles.some((role) => ['moderator', 'commercial', 'comptable', 'vendor', 'delivery'].includes(role))) return '/team';
+    if (roles.some((role) => ['referent', 'association', 'school', 'school_admin'].includes(role))) return '/parrainage';
+    return '/me';
   };
 
   useEffect(() => {

@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SchoolCombobox, type SchoolOption } from "@/components/kits/SchoolCombobox";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import SmartImage from "@/components/SmartImage";
 
 const CATEGORY_LABELS: Record<string, string> = {
   kit_cahiers: "Kit Cahiers",
@@ -228,10 +229,10 @@ const KitsEcole = () => {
                   <Card key={kit.id} className="group overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
                     <div className="relative aspect-[4/3] w-full bg-muted">
                       {kit.image_url ? (
-                        <img
+                        <SmartImage
                           src={kit.image_url}
                           alt={kit.name}
-                          loading="lazy"
+                          fallbackSrc="/placeholder.svg"
                           className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform"
                         />
                       ) : (

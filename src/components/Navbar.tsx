@@ -45,7 +45,6 @@ const Navbar = () => {
     { label: "Boutique", href: "/shop" },
     { label: "Kit École", href: "/kits-scolaires" },
     { label: "Actualités", href: "/actualites" },
-    { label: t.nav.about, href: "/about" },
     { label: t.nav.contact, href: "/contact" },
   ];
 
@@ -60,8 +59,8 @@ const Navbar = () => {
       <div className="hidden md:block bg-primary-dark text-primary-foreground text-xs">
         <div className="container mx-auto px-4 flex items-center justify-between h-8">
           <div className="flex items-center gap-4">
-            <a href="tel:+2250758465933" className="flex items-center gap-1.5 hover:text-accent transition-colors">
-              <Phone size={12} /> +225 07 58 46 59 33
+            <a href="tel:+2250702584457" className="flex items-center gap-1.5 hover:text-accent transition-colors">
+              <Phone size={12} /> +225 07 02 58 44 57
             </a>
             <span className="opacity-40">|</span>
             <span className="flex items-center gap-1.5">
@@ -303,7 +302,7 @@ const Navbar = () => {
             </nav>
 
             <div className="p-4 border-t border-border bg-muted/40 text-xs text-muted-foreground space-y-1">
-              <a href="tel:+2250758465933" className="flex items-center gap-2"><Phone size={12} /> +225 07 58 46 59 33</a>
+              <a href="tel:+2250702584457" className="flex items-center gap-2"><Phone size={12} /> +225 07 02 58 44 57</a>
               <span className="flex items-center gap-2"><Truck size={12} /> Livraison gratuite</span>
             </div>
           </aside>
