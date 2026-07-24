@@ -90,15 +90,15 @@ const CategoryProductRow = ({ title, slug, products, seeAllHref, showSeeAll = tr
 
         <div
           ref={scrollerRef}
-          className="flex gap-2 sm:gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-3 px-3 sm:mx-0 sm:px-0"
+          className="flex gap-1.5 sm:gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-3 px-3 sm:mx-0 sm:px-0"
           style={{ scrollbarWidth: "thin" }}
         >
           {products.map((p) => (
             <div
               key={p.id}
               className={dense
-                ? "snap-start shrink-0 w-[42%] sm:w-[28%] md:w-[21%] lg:w-[17%] xl:w-[14.5%]"
-                : "snap-start shrink-0 w-[46%] sm:w-[32%] md:w-[24%] lg:w-[19%] xl:w-[16.5%]"}
+                ? "snap-start shrink-0 w-[30%] sm:w-[20%] md:w-[15%] lg:w-[12%] xl:w-[10%]"
+                : "snap-start shrink-0 w-[32%] sm:w-[22%] md:w-[17%] lg:w-[14%] xl:w-[12%]"}
             >
               <ProductCard product={p as any} compact={dense} />
             </div>
