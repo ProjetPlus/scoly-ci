@@ -298,7 +298,7 @@ const Shop = () => {
 
             <div>
               {loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-1.5 sm:gap-2 lg:gap-3">
                   {[...Array(10)].map((_, i) => (
                     <div key={i} className="bg-card rounded-lg border border-border p-2 animate-pulse">
                       <div className="aspect-square bg-muted rounded mb-2" />
@@ -315,7 +315,7 @@ const Shop = () => {
                 </div>
               ) : selectedCategory || searchQuery || selectedPublisher !== "all" ? (
                 // Filtered view — flat responsive grid
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-1.5 sm:gap-2 lg:gap-3">
                   {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
