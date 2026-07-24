@@ -12,7 +12,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, Link } from "react-router-dom";
 import { applySort, type SortMode } from "@/lib/productSort";
-import { sortCategories } from "@/lib/categoryAssets";
+import { productMatchesCategory, sortCategories } from "@/lib/categoryAssets";
 import CategoryProductRow from "@/components/CategoryProductRow";
 import { useQuery } from "@tanstack/react-query";
 
@@ -136,17 +136,7 @@ const Shop = () => {
     const name = (productName(product) || '').toLowerCase();
     const matchesSearch = name.includes(searchQuery.toLowerCase());
     const selected = selectedCategory ? categories.find((c) => c.id === selectedCategory) : null;
-    const categoryText = `${selected?.slug || ""} ${selected?.name_fr || ""} ${selected?.name_en || ""}`.toLowerCase();
-    const productText = `${productName(product) || ""} ${product.description_fr || ""} ${product.brand || ""} ${product.author_details || ""} ${product.metadata?.category || ""} ${product.metadata?.cycle || ""}`.toLowerCase();
-    const fallbackCategoryMatch =
-      !!selected &&
-      ((categoryText.includes("maternelle") && /maternelle|prescolaire|préscolaire|pre[- ]?school/.test(productText)) ||
-        (categoryText.includes("primaire") && /\b(cp|ce|cm)\d?\b|primaire|primary/.test(productText)) ||
-        (categoryText.includes("secondaire") && /6[eè]|5[eè]|4[eè]|3[eè]|2nde|1[eè]re|terminale|college|collège|lycee|lycée|secondaire/.test(productText)) ||
-        (categoryText.includes("bureau") && /bureau|bureautique|office|papier|stylo|classeur|enveloppe|cartouche/.test(productText)) ||
-        (categoryText.includes("librairie") && /livre|roman|lecture|cahier|ouvrage|librairie/.test(productText)) ||
-        (categoryText.includes("univers") && /universit|facult|superieur|supérieur/.test(productText)));
-    const matchesCategory = !selectedCategory || product.category_id === selectedCategory || fallbackCategoryMatch;
+    const matchesCategory = !selected || productMatchesCategory(product, selected);
     const pub = `${product.brand || ""} ${product.author_details || ""} ${(product.metadata as any)?.publisher || ""}`.toLowerCase();
     const matchesPublisher = selectedPublisher === "all" || pub.includes(selectedPublisher.toLowerCase());
     return matchesSearch && matchesCategory && matchesPublisher;
@@ -334,9 +324,7 @@ const Shop = () => {
                 // Default view — Jumia-style: one horizontal row per category
                 <div className="space-y-2 -mx-3 sm:-mx-4 lg:mx-0">
                   {displayCategories.map((cat) => {
-                    const rowProducts = filteredProducts.filter(
-                      (p) => p.category_id === cat.id,
-                    );
+                    const rowProducts = filteredProducts.filter((p) => productMatchesCategory(p, cat));
                     if (rowProducts.length === 0) return null;
                     return (
                       <CategoryProductRow
@@ -344,6 +332,7 @@ const Shop = () => {
                         title={getLocalizedName(cat)}
                         slug={cat.slug}
                         products={rowProducts.slice(0, 20)}
+                        dense
                       />
                     );
                   })}

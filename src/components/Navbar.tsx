@@ -69,7 +69,7 @@ const Navbar = () => {
           </div>
           <div className="flex items-center gap-4">
             <Link to="/faq" className="hover:text-accent transition-colors">Aide</Link>
-            <Link to="/parrainage" className="hover:text-accent transition-colors">Parrainage</Link>
+            <Link to="/me" className="hover:text-accent transition-colors">Référent</Link>
             <LanguageSwitcher />
           </div>
         </div>
@@ -146,7 +146,7 @@ const Navbar = () => {
                   </button>
                   <div className="absolute right-0 top-full mt-1 w-56 bg-popover border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
                     <div className="py-2">
-                      <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted">
+                      <Link to="/client" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted">
                         <User size={16} /> Mon compte
                       </Link>
                       <Link to="/wishlist" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted">

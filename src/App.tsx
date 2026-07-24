@@ -14,6 +14,7 @@ import PageLoader from "@/components/PageLoader";
 import { SessionSecurityProvider } from "@/components/SessionSecurityProvider";
 import RoleGuard from "@/components/RoleGuard";
 import { useAuth } from "@/contexts/AuthContext";
+import { ADMIN_ROLES, REFERENT_ROLES, TEAM_ROLES, getDashboardPathForRoles, hasPrivilegedRole, isPlatformAdmin, isReferent, isTeamMember } from "@/lib/rbac";
 
 // Critical path - eager load
 import Index from "./pages/Index";
@@ -60,32 +61,30 @@ const Forbidden = ({ title = "Accès refusé (403)" }: { title?: string }) => (
   </main>
 );
 
-const TEAM_ROLES = ["moderator", "commercial", "comptable", "vendor", "delivery"];
-const PARTNER_ROLES = ["referent", "association", "school", "school_admin"];
-const ADMIN_ROLES = ["super_admin", "admin"];
-
 const TeamAccess = () => {
   const { user, loading, rolesLoading, roles } = useAuth();
   if (loading || (user && rolesLoading)) return <PageLoader />;
   if (!user) return <Auth />;
-  // Super admins et admins vont directement à /admin (accès plateforme complet).
-  if (roles.some((r) => ADMIN_ROLES.includes(r))) {
+  if (isPlatformAdmin(roles)) {
     return <Navigate to="/admin" replace />;
   }
-  return roles.some((r) => TEAM_ROLES.includes(r))
+  return isTeamMember(roles)
     ? <TeamDashboard />
     : <Forbidden title="Espace équipe interne réservé" />;
 };
 
-const PartnerAccess = () => {
+const ReferentAccess = () => {
   const { user, loading, rolesLoading, roles } = useAuth();
   if (loading || (user && rolesLoading)) return <PageLoader />;
   if (!user) return <Auth />;
-  // Séparation stricte : /me = espace CLIENT uniquement.
-  if (roles.some((r) => ADMIN_ROLES.includes(r))) return <Navigate to="/admin" replace />;
-  if (roles.some((r) => TEAM_ROLES.includes(r))) return <Navigate to="/team" replace />;
-  if (roles.some((r) => PARTNER_ROLES.includes(r))) return <Navigate to="/parrainage" replace />;
-  // Seul le rôle client (user) — ou l'absence de rôle privilégié — accède ici.
+  return isReferent(roles) ? <Referral /> : <Navigate to={getDashboardPathForRoles(roles)} replace />;
+};
+
+const ClientAccess = () => {
+  const { user, loading, rolesLoading, roles } = useAuth();
+  if (loading || (user && rolesLoading)) return <PageLoader />;
+  if (!user) return <Auth />;
+  if (hasPrivilegedRole(roles)) return <Navigate to={getDashboardPathForRoles(roles)} replace />;
   return <Account />;
 };
 
@@ -134,9 +133,9 @@ const App = () => (
                       <Route path="/about" element={<Navigate to="/contact" replace />} />
                       <Route path="/a-propos" element={<Navigate to="/contact" replace />} />
                       <Route path="/contact" element={<Contact />} />
-                      <Route path="/account" element={<RoleGuard><Account /></RoleGuard>} />
-                      <Route path="/compte" element={<RoleGuard><Account /></RoleGuard>} />
-                      <Route path="/admin" element={<RoleGuard allow={["admin","super_admin"]} loginRedirect="/team"><Admin /></RoleGuard>} />
+                      <Route path="/account" element={<Navigate to="/client" replace />} />
+                      <Route path="/compte" element={<Navigate to="/client" replace />} />
+                      <Route path="/admin" element={<RoleGuard allow={[...ADMIN_ROLES]} loginRedirect="/team"><Admin /></RoleGuard>} />
                       <Route path="/actualites" element={<Actualites />} />
                       <Route path="/actualites/write" element={<RoleGuard allow={["super_admin","admin","moderator","user"]}><WriteArticle /></RoleGuard>} />
                       <Route path="/actualites/edit/:id" element={<RoleGuard allow={["super_admin","admin","moderator","user"]}><WriteArticle /></RoleGuard>} />
@@ -153,9 +152,9 @@ const App = () => (
                       <Route path="/auth/confirm" element={<AuthConfirm />} />
                       <Route path="/auth/reset-password" element={<ResetPassword />} />
                       <Route path="/kits-scolaires" element={<KitsEcole />} />
-                      <Route path="/me" element={<PartnerAccess />} />
-                      <Route path="/client" element={<Navigate to="/me" replace />} />
-                      <Route path="/parrainage" element={<Referral />} />
+                      <Route path="/client" element={<ClientAccess />} />
+                      <Route path="/me" element={<ReferentAccess />} />
+                      <Route path="/parrainage" element={<Navigate to="/me" replace />} />
                       <Route path="/livraison-retours" element={<DeliveryReturns />} />
                       <Route path="/livraison" element={<DeliveryReturns />} />
                       <Route path="/unsubscribe" element={<Unsubscribe />} />

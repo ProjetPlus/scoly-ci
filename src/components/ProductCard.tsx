@@ -56,7 +56,7 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
     <article className="group relative bg-card rounded-lg sm:rounded-xl border border-border/70 hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col overflow-hidden">
       <Link
         to={`/shop/product/${product.id}`}
-        className="relative aspect-square block overflow-hidden bg-muted/20"
+        className={`relative ${compact ? "aspect-[4/3]" : "aspect-square"} block overflow-hidden bg-muted/20`}
         aria-label={name}
       >
         <SmartImage
@@ -115,13 +115,13 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
 
       <div className={`flex flex-col flex-1 ${compact ? "p-1" : "p-1.5"} gap-0.5`}>
         <Link to={`/shop/product/${product.id}`} className="flex-1">
-          <h3 className="text-foreground hover:text-primary transition-colors line-clamp-2 text-[10.5px] sm:text-[11px] leading-tight min-h-[2.2em]">
+          <h3 className={`${compact ? "text-[10px] sm:text-[10.5px]" : "text-[10.5px] sm:text-[11px]"} text-foreground hover:text-primary transition-colors line-clamp-2 leading-tight min-h-[2.2em]`}>
             {name}
           </h3>
         </Link>
 
         <div className="flex items-baseline gap-1 flex-wrap">
-          <span className="text-[11px] sm:text-sm font-bold text-primary tabular-nums">
+          <span className={`${compact ? "text-[10.5px] sm:text-xs" : "text-[11px] sm:text-sm"} font-bold text-primary tabular-nums`}>
             {formatPrice(product.price)}
           </span>
           {product.original_price && product.original_price > product.price && (
@@ -139,7 +139,7 @@ const ProductCard = ({ product, compact = false }: ProductCardProps) => {
         <Button
           variant="default"
           size="sm"
-          className="w-full mt-1 text-[10px] sm:text-[11px] h-6 px-1"
+          className={`${compact ? "h-5 text-[9.5px]" : "h-6 text-[10px] sm:text-[11px]"} w-full mt-1 px-1`}
           onClick={() => addToCart(product.id)}
           disabled={outOfStock}
         >

@@ -27,13 +27,15 @@ interface Props {
   products: Product[];
   /** Cible du bouton "Tout voir" — par défaut /shop?category=slug */
   seeAllHref?: string;
+  showSeeAll?: boolean;
+  dense?: boolean;
 }
 
 /**
  * Ligne horizontale de produits pour une catégorie (style Jumia).
  * Défile en snap-x, fluide sur mobile/tablette/desktop.
  */
-const CategoryProductRow = ({ title, slug, products, seeAllHref }: Props) => {
+const CategoryProductRow = ({ title, slug, products, seeAllHref, showSeeAll = true, dense = false }: Props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   if (!products || products.length === 0) return null;
@@ -55,12 +57,14 @@ const CategoryProductRow = ({ title, slug, products, seeAllHref }: Props) => {
             {title}
           </h2>
           <div className="flex items-center gap-2 shrink-0">
-            <Link
-              to={href}
-              className="text-xs sm:text-sm text-primary hover:underline font-medium"
-            >
-              Tout voir
-            </Link>
+            {showSeeAll && (
+              <Link
+                to={href}
+                className="text-xs sm:text-sm text-primary hover:underline font-medium"
+              >
+                Tout voir
+              </Link>
+            )}
             <div className="hidden sm:flex gap-1">
               <Button
                 variant="outline"
@@ -92,9 +96,11 @@ const CategoryProductRow = ({ title, slug, products, seeAllHref }: Props) => {
           {products.map((p) => (
             <div
               key={p.id}
-              className="snap-start shrink-0 w-[46%] sm:w-[32%] md:w-[24%] lg:w-[19%] xl:w-[16.5%]"
+              className={dense
+                ? "snap-start shrink-0 w-[42%] sm:w-[28%] md:w-[21%] lg:w-[17%] xl:w-[14.5%]"
+                : "snap-start shrink-0 w-[46%] sm:w-[32%] md:w-[24%] lg:w-[19%] xl:w-[16.5%]"}
             >
-              <ProductCard product={p as any} />
+              <ProductCard product={p as any} compact={dense} />
             </div>
           ))}
         </div>

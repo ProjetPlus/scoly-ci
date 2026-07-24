@@ -215,7 +215,7 @@ const Actualites = () => {
                           src={article.cover_image} 
                           alt={getTitle(article)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          fallbackSrc="/placeholder.svg"
+                          fallbackSrc="/article-fallback.jpg"
                           priority={false}
                         />
                         {article.is_premium && (

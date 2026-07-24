@@ -17,9 +17,9 @@ import {
   Eye,
   X,
   Bell,
-  Store,
   DollarSign,
   Truck,
+  Store,
   Gift,
   BarChart3,
   HelpCircle,
@@ -91,14 +91,8 @@ type TabType =
   | "deliveries"
   | "loyalty"
   | "payments"
-  | "social_media"
-  | "documentation"
   | "referrals"
   | "flash_deals"
-  | "email_marketing"
-  | "email_logs"
-  | "email_analytics"
-  | "email_monitoring"
   | "zones"
   | "school_kits"
   | "reclassify";
@@ -112,38 +106,40 @@ const Admin = () => {
 
   const menuGroups: Array<{ label: string; items: Array<{ id: string; label: string; icon: any }> }> = [
     {
-      label: "Vue d'ensemble",
+      label: "Pilotage",
       items: [
         { id: "dashboard", label: "Tableau de bord", icon: LayoutDashboard },
         { id: "stats", label: "Statistiques", icon: BarChart3 },
-        { id: "sharestats", label: "Partages & Analytics", icon: Share2 },
       ],
     },
     {
-      label: "Catalogue & Ventes",
+      label: "Catalogue",
       items: [
         { id: "products", label: "Produits", icon: Package },
         { id: "reclassify", label: "Reclassement IA", icon: Sparkles },
-        { id: "school_kits", label: "Kit École", icon: Package },
+        { id: "school_kits", label: "Kits école", icon: Package },
         { id: "categories", label: "Catégories", icon: FolderTree },
+        { id: "flash_deals", label: "Ventes flash", icon: Zap },
+        { id: "promotions_mgmt", label: "Promotions", icon: Tag },
+        { id: "promotions", label: "Coupons", icon: Tag },
+      ],
+    },
+    {
+      label: "Commandes",
+      items: [
         { id: "orders", label: "Commandes", icon: ShoppingBag },
         { id: "payments", label: "Paiements", icon: DollarSign },
         { id: "deliveries", label: "Livraisons", icon: Truck },
-        { id: "promotions_mgmt", label: "Promotions", icon: Tag },
-        { id: "flash_deals", label: "Ventes Flash", icon: Zap },
-        { id: "promotions", label: "Coupons", icon: Tag },
       ],
     },
 
     {
-      label: "Utilisateurs & Équipe",
+      label: "Utilisateurs & zones",
       items: [
         { id: "users", label: "Utilisateurs", icon: Users },
-        { id: "vendors", label: "Vendeurs", icon: Store },
-        { id: "commissions", label: "Commissions", icon: DollarSign },
-        { id: "loyalty", label: "Fidélité", icon: Gift },
-        { id: "referrals", label: "Parrainages", icon: UserPlus },
         { id: "zones", label: "Zones & Commerciaux", icon: Truck },
+        { id: "referrals", label: "Référents", icon: UserPlus },
+        { id: "commissions", label: "Commissions", icon: DollarSign },
       ],
     },
     {
@@ -152,23 +148,12 @@ const Admin = () => {
         { id: "articles", label: "Actualités", icon: FileText },
         { id: "review", label: "Validation", icon: Eye },
         { id: "advertisements", label: "Publicités", icon: Bell },
-        { id: "social_media", label: "Réseaux Sociaux", icon: Share2 },
-      ],
-    },
-    {
-      label: "Emails",
-      items: [
-        { id: "email_marketing", label: "📧 Email Marketing", icon: Bell },
-        { id: "email_logs", label: "📬 Journaux Email", icon: Bell },
-        { id: "email_analytics", label: "📊 Analytics Campagnes", icon: BarChart3 },
-        { id: "email_monitoring", label: "🛰️ Monitoring Fournisseurs", icon: BarChart3 },
       ],
     },
     {
       label: "Système",
       items: [
         { id: "faq", label: "FAQ", icon: HelpCircle },
-        { id: "documentation", label: "Documentation", icon: FileText },
         { id: "settings", label: "Paramètres", icon: Settings },
       ],
     },
@@ -313,12 +298,7 @@ const Admin = () => {
           <div className="min-w-0 max-w-full overflow-x-hidden p-3 sm:p-6 lg:p-8 pb-20 lg:pb-8 pt-4">
 
           {activeTab === "dashboard" && <AdminDashboard />}
-          {activeTab === "email_marketing" && <EmailMarketing />}
-          {activeTab === "email_logs" && <EmailLogsDashboard />}
-          {activeTab === "email_analytics" && <CampaignAnalyticsDashboard />}
-          {activeTab === "email_monitoring" && <ProviderMonitoring />}
           {activeTab === "stats" && <AdvancedStats />}
-          {activeTab === "sharestats" && <ShareStatsTab />}
           {activeTab === "products" && <ProductsTab />}
           {activeTab === "reclassify" && <ProductReclassifier />}
           {activeTab === "categories" && <CategoriesTab />}
@@ -326,18 +306,14 @@ const Admin = () => {
           {activeTab === "payments" && <PaymentsTab />}
           {activeTab === "deliveries" && <DeliveriesTab />}
           {activeTab === "users" && <UserManagement />}
-          {activeTab === "vendors" && <VendorsTab />}
           {activeTab === "commissions" && <CommissionsTab />}
-          {activeTab === "loyalty" && <LoyaltyTab />}
           {activeTab === "promotions_mgmt" && <PromotionsManagement />}
           {activeTab === "flash_deals" && <FlashDealsManagement />}
-          {activeTab === "social_media" && <SocialMediaManager />}
           {activeTab === "review" && <PublicationsReview />}
           {activeTab === "articles" && <ArticlesTab />}
           {activeTab === "promotions" && <CouponManagement />}
           {activeTab === "advertisements" && <AdvertisementsManagement />}
           {activeTab === "faq" && <FAQManagement />}
-          {activeTab === "documentation" && <DocumentationManager />}
           {activeTab === "referrals" && <ReferralsAdminTab />}
           {activeTab === "settings" && <PlatformSettings />}
           {activeTab === "zones" && <ZonesManagement />}

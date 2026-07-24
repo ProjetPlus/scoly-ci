@@ -12,6 +12,7 @@ import MathCaptcha from "@/components/MathCaptcha";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRateLimit } from "@/hooks/useRateLimit";
+import { getDashboardPathForRoles, isPlatformAdmin, isReferent, isTeamMember } from "@/lib/rbac";
 
 
 const Auth = () => {
@@ -52,9 +53,9 @@ const Auth = () => {
       .eq('user_id', u.id);
 
     const roleList = (roles || []).map((r) => r.role);
-    const isAdmin = roleList.some((role) => ['super_admin', 'admin'].includes(role));
-    const isTeam = roleList.some((role) => ['moderator', 'commercial', 'comptable', 'vendor', 'delivery'].includes(role));
-    const isPartner = roleList.some((role) => ['referent', 'association', 'school', 'school_admin'].includes(role));
+    const isAdmin = isPlatformAdmin(roleList);
+    const isTeam = isTeamMember(roleList);
+    const isPartner = isReferent(roleList);
 
     // Séparation stricte par portail : chaque portail n'accepte que ses rôles.
     if (pathname === '/team') {
@@ -62,15 +63,17 @@ const Auth = () => {
       else if (isTeam) navigate('/team', { replace: true });
       else { toast.error("Ce compte n'a pas accès à l'espace équipe."); await supabase.auth.signOut(); }
     } else if (pathname === '/me' || pathname === '/client') {
-      if (isAdmin) { toast.error("Compte administrateur — accédez à /admin."); await supabase.auth.signOut(); }
-      else if (isTeam) { toast.error("Compte équipe — accédez à /team."); await supabase.auth.signOut(); }
-      else if (isPartner) navigate('/parrainage', { replace: true });
-      else navigate('/me', { replace: true });
+      if (pathname === '/me') {
+        if (isPartner) navigate('/me', { replace: true });
+        else { toast.error("Ce compte n'a pas accès à l'espace référent."); navigate(getDashboardPathForRoles(roleList), { replace: true }); }
+      } else if (isAdmin || isTeam || isPartner) {
+        navigate(getDashboardPathForRoles(roleList), { replace: true });
+      } else navigate('/client', { replace: true });
     } else {
       if (isAdmin) navigate('/admin', { replace: true });
       else if (isTeam) navigate('/team', { replace: true });
-      else if (isPartner) navigate('/parrainage', { replace: true });
-      else navigate('/me', { replace: true });
+      else if (isPartner) navigate('/me', { replace: true });
+      else navigate('/client', { replace: true });
     }
   };
 
@@ -321,7 +324,7 @@ const Auth = () => {
   const portal = isTeamPortal
     ? {
         label: "Portail Équipe Scoly",
-        tagline: "Administration · Modération · Commercial · Livraison",
+        tagline: "Opérations · Modération · Commercial · Comptabilité",
         subtitle: "Espace strictement réservé aux équipes internes Scoly.",
         loginTitle: "Connexion Équipe",
         loginCta: "Accéder à mon espace équipe",

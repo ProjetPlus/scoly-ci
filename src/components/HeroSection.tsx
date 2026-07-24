@@ -138,16 +138,13 @@ const HeroSection = () => {
                   className={`absolute inset-0 transition-opacity duration-700 ${i === newsIdx ? "opacity-100" : "opacity-0 pointer-events-none"}`}
                   aria-hidden={i !== newsIdx}
                 >
-                  {n.cover_image ? (
-                    <SmartImage
-                      src={n.cover_image}
-                      alt={n.title_fr}
-                      className="w-full h-full object-cover"
-                      priority={i === 0}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary to-accent" />
-                  )}
+                  <SmartImage
+                    src={n.cover_image}
+                    alt={n.title_fr}
+                    className="w-full h-full object-cover"
+                    fallbackSrc="/article-fallback.jpg"
+                    priority={i === 0}
+                  />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/95 via-background/80 to-transparent p-3">
                     {n.category && (
                       <span className="inline-block text-[9px] font-bold uppercase tracking-wide text-primary mb-1">
