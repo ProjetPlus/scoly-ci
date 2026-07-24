@@ -115,7 +115,7 @@ const FeaturedProductsCarousel = () => {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-[45%] sm:w-[32%] md:w-[24%] lg:w-[19%] xl:w-[16.5%] group"
+                className="flex-shrink-0 w-[32%] sm:w-[22%] md:w-[17%] lg:w-[14%] xl:w-[12%] group"
               >
                 <div className="bg-card rounded-md border border-border overflow-hidden hover:shadow-md transition-all h-full flex flex-col">
                   <Link to={`/product/${product.id}`} className="relative aspect-square block overflow-hidden">
