@@ -19,6 +19,8 @@ import {
   Bell,
   DollarSign,
   Truck,
+  Store,
+  Gift,
   BarChart3,
   HelpCircle,
   FileText,

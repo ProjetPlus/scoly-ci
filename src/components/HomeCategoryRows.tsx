@@ -26,7 +26,6 @@ interface Product {
   category_id: string | null;
   free_shipping: boolean | null;
   views: number | null;
-  rating: number | null;
   created_at: string | null;
   description_fr?: string | null;
   description_en?: string | null;
@@ -57,7 +56,7 @@ const HomeCategoryRows = () => {
     queryFn: async (): Promise<Product[]> => {
       const { data, error } = await supabase
         .from("products")
-        .select("id,name_fr,name_en,name_de,name_es,description_fr,description_en,price,original_price,discount_percent,stock,image_url,images,is_featured,category_id,free_shipping,views,rating,created_at,brand,author_details,metadata")
+        .select("id,name_fr,name_en,name_de,name_es,description_fr,description_en,price,original_price,discount_percent,stock,image_url,images,is_featured,category_id,free_shipping,views,created_at,brand,author_details,metadata")
         .eq("is_active", true)
         .order("created_at", { ascending: false })
         .range(0, 1999);
