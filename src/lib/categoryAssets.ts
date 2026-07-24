@@ -79,6 +79,50 @@ export function sortCategories<
   });
 }
 
+type ProductCategoryProbe = {
+  category_id?: string | null;
+  name_fr?: string | null;
+  name_en?: string | null;
+  description_fr?: string | null;
+  description_en?: string | null;
+  brand?: string | null;
+  author_details?: string | null;
+  metadata?: Record<string, unknown> | null;
+};
+
+export function productMatchesCategory(
+  product: ProductCategoryProbe,
+  category: { id: string; slug?: string | null; name_fr?: string | null; name_en?: string | null },
+) {
+  if (product.category_id === category.id) return true;
+
+  const key = getCategoryAssetKey(category);
+  if (!key) return false;
+
+  const metadata = product.metadata || {};
+  const text = `${product.name_fr || ""} ${product.name_en || ""} ${product.description_fr || ""} ${product.description_en || ""} ${product.brand || ""} ${product.author_details || ""} ${String(metadata.category || "")} ${String(metadata.cycle || "")} ${String(metadata.level || "")}`
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  switch (key) {
+    case "maternelle":
+      return /maternelle|prescolaire|pre[- ]?school|petite section|moyenne section|grande section/.test(text);
+    case "primaire":
+      return /\b(cp|ce|cm)\d?\b|primaire|primary|ecole primaire/.test(text);
+    case "secondaire":
+      return /6e|6eme|5e|5eme|4e|4eme|3e|3eme|2nde|1ere|terminale|college|lycee|secondaire/.test(text);
+    case "universitaire":
+      return /universit|facult|superieur|campus|licence|master/.test(text);
+    case "bureautique":
+      return /bureau|bureautique|office|papier|stylo|classeur|enveloppe|cartouche|ramette|imprimante/.test(text);
+    case "librairie":
+      return /livre|roman|lecture|ouvrage|librairie|manuel|dictionnaire|annale/.test(text);
+    default:
+      return false;
+  }
+}
+
 /**
  * @deprecated Les catégories n'affichent plus d'image décorative.
  * Conservé uniquement pour la compatibilité ascendante — renvoie toujours null.

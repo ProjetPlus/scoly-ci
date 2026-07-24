@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { getDashboardPathForRoles, isPlatformAdmin } from '@/lib/rbac';
 
 interface AuthContextType {
   user: User | null;
@@ -59,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return nextRoles;
       });
       setIsAdmin((prev) => {
-        const next = nextRoles.includes('admin') || nextRoles.includes('super_admin');
+        const next = isPlatformAdmin(nextRoles);
         return prev === next ? prev : next;
       });
     } finally {
@@ -74,18 +75,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const getDashboardPath = () => {
-    if (roles.some((role) => ['super_admin', 'admin'].includes(role))) return '/admin';
-    if (roles.some((role) => ['moderator', 'commercial', 'comptable', 'vendor', 'delivery'].includes(role))) return '/team';
-    if (roles.some((role) => ['referent', 'association', 'school', 'school_admin'].includes(role))) return '/parrainage';
-    return '/me';
+    return getDashboardPathForRoles(roles);
   };
 
   useEffect(() => {
-    let rolesChannel: ReturnType<typeof supabase.channel> | null = null;
     let currentUserId: string | null = null;
 
     const setupRolesForUser = (userId: string) => {
-      if (currentUserId === userId && rolesChannel) {
+      if (currentUserId === userId) {
         // Même utilisateur, même canal : ne rien faire (évite la cascade de re-fetch/clignotement)
         return;
       }
@@ -95,26 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // sinon la barre de navigation clignote à chaque refresh de token.
       if (isNewUser) setRolesLoading(true);
 
-      if (rolesChannel) {
-        supabase.removeChannel(rolesChannel);
-        rolesChannel = null;
-      }
-
       setTimeout(() => fetchRoles(userId), 0);
-
-      rolesChannel = supabase
-        .channel(`user-roles-${userId}`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'user_roles',
-            filter: `user_id=eq.${userId}`,
-          },
-          () => fetchRoles(userId)
-        )
-        .subscribe();
     };
 
     // Set up auth state listener FIRST
@@ -133,10 +111,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (session?.user) {
         setupRolesForUser(session.user.id);
       } else {
-        if (rolesChannel) {
-          supabase.removeChannel(rolesChannel);
-          rolesChannel = null;
-        }
         currentUserId = null;
         setRoles([]);
         setIsAdmin(false);
@@ -155,13 +129,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       subscription.unsubscribe();
 
-      if (rolesChannel) supabase.removeChannel(rolesChannel);
     };
   }, []);
 
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/client`;
       
       const { error } = await supabase.auth.signUp({
         email,
