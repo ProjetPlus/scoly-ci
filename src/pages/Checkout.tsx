@@ -328,7 +328,7 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user || items.length === 0) return;
+    if (!user || (items.length === 0 && kits.length === 0)) return;
     if (!isOrderAmountValid(finalTotal)) {
       toast({ title: "Montant trop bas", description: formatMinOrderMessage(), variant: "destructive" });
       return;
