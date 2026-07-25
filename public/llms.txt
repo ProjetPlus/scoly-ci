@@ -1,0 +1,60 @@
+# Scoly — Fournitures scolaires & bureautiques en Côte d'Ivoire
+
+> Scoly (scoly.ci) est la plateforme ivoirienne pour fournitures scolaires, manuels, articles de bureautique et kits scolaires. Livraison gratuite en Côte d'Ivoire et paiement Mobile Money sécurisé.
+
+## Pages principales
+- [Accueil](/)
+- [Boutique](/shop)
+- [Kit Scolaire](/kits-scolaires)
+- [Actualités](/actualites)
+- [Livraison & retours](/livraison-retours)
+
+## Catégories publiques
+- [Scoly Bureautique](/shop?category=scoly-bureautique)
+- [Scoly Librairie](/shop?category=scoly-librairie)
+- [Scoly Maternelle](/shop?category=scoly-maternelle)
+- [Scoly Primaire](/shop?category=scoly-primaire)
+- [Scoly Secondaire](/shop?category=scoly-secondaire)
+- [Scoly Université](/shop?category=scoly-universite)
+
+## Produits récents
+- [Le sublime sacrifice - Récit jeunesse](/shop/product/6e400be5-38af-456b-ad27-0e895b28de78)
+- [Harrap's Dictionnaire Mini Plus Espagnol](/shop/product/574c3ea6-d9f3-4b1b-bd45-879b2ef1a0a6)
+- [Mini dictionnaire Le Robert & Collins Anglais](/shop/product/352cc7fd-5077-4824-a7c4-98f532bfe517)
+- [Chemise à élastique cartonnée 'Ivoire' A4](/shop/product/068fc545-bd81-4e77-8f00-96f9ab0668f8)
+- [Kit de Géométrie Scolaire Complet Bleu](/shop/product/52bf1848-1ffd-4458-b2e0-f444ff7d065d)
+- [Boîte de 20 Stylos BIC Cristal Original](/shop/product/682cc6e2-268b-4f03-98a1-d5c73721ea76)
+- [Bley et sa Bande](/shop/product/bb9b8d57-d1cb-4a5c-82ba-d28ca213ac48)
+- [Sur les routes de l'Afrique](/shop/product/eab7cc2c-6822-40d5-8779-fec8403bb01f)
+- [Le Cahier noir](/shop/product/b7d6359a-b92a-4535-a250-11535349ea8b)
+- [Jours d'angoisse](/shop/product/10c0e15d-4a8a-45e3-814e-b9e8666e9c21)
+- [Une eau dormante](/shop/product/3d4e8a4d-1418-4a58-b3a2-53e35569de54)
+- [L'ordonnance](/shop/product/94a33f4e-f559-4e8d-abda-9ddc79a7256e)
+- [Harrap's Dictionnaire Student Anglais](/shop/product/126bd044-3731-46ea-8810-0da8ec83b023)
+- [Le Royaume du Cœur](/shop/product/ea7425ba-f9ea-4859-a5ae-e0eefddb2cb6)
+- [Sous le pouvoir des blakoros I - Traites](/shop/product/9a5f11e4-28e2-4e5d-ae92-3559ed90aaea)
+- [Sous le pouvoir des Blakoros II - Courses](/shop/product/ecf94429-b25e-4edb-a46c-a7af5b3e56ed)
+- [Larousse Grand Dictionnaire Anglais](/shop/product/b4c17aa4-d896-4278-abe7-d9537c6edf15)
+- [HP Spectre x360](/shop/product/c897734c-323d-4560-ab3a-714159e85763)
+- [Ordinateur tout-en-un Microsoft Surface Studio 2](/shop/product/07cec6da-4d39-4423-92c7-d7354cd7923b)
+- [Ordinateur Tout-en-un HP avec clavier et souris](/shop/product/119e0673-5b47-4245-891d-ed2cccfd3d6d)
+- [Lot de 5 cahiers Privilège+ Couvertures Polypro](/shop/product/df10c7f7-6cc9-446d-a82a-15a2e7254f34)
+- [Cahier Étudiant Privilège+ 288 pages - Motif vert](/shop/product/7c0d2cf2-352a-4def-b402-f2e4e1656604)
+- [Destins Hypothéqués : Chroniques de la vie scolaire](/shop/product/08e18b8d-c1f9-4212-81ef-113efba058af)
+- [L'Espoir est au Sud](/shop/product/3f8721b4-521a-4531-9273-6fae7ec205ef)
+- [L'Héritier de Mbula](/shop/product/14250015-e61a-4cf1-b555-0b098263e070)
+
+## Articles récents
+- [Le Guide Complet du Papier Glacé 180g : Qualité et Usages Professionnels](/actualites/45ee8854-c371-418e-bcfd-aab4e3778fde)
+- [Résultats Scolaires 2024-2025 : Une Progression du Taux de Réussite en Côte d'Ivoire](/actualites/73b7a84f-a115-4a99-b98c-d230edd3cbcb)
+- [L'Essentiel de la Bureautique : Booster la Productivité au Travail](/actualites/7fd0f2c0-9d7e-4466-a8cd-eec6ad968848)
+- [Scoly se réinvente — 4 nouvelles fonctionnalités pour révolutionner la rentrée scolaire !](/actualites/d866219c-f667-44c1-a155-d3ec941cc15e)
+- [Scoly se réinvente : 4 nouvelles fonctionnalités pour révolutionner la rentrée scolaire !](/actualites/888b1967-1069-47c4-8e58-e17a0dc798ea)
+- [NSIA Banque et Scoly : Un partenariat historique pour l'éducation digitale en Côte d'Ivoire](/actualites/932195a0-0272-420c-9319-2f60d932c47f)
+- [Réussir ses vacances sans oublier ses cours : Le guide ultime pour les élèves](/actualites/d94e1226-4bcc-49a9-ba03-d00b5e8c7909)
+- [École de la Deuxième Chance : Redonner Espoir et Avenir à la Jeunesse Ivoirienne](/actualites/c3cd8372-7f39-496a-a6bd-a3bd5c4ca6e5)
+- [Boostez votre Productivité avec Scoly : Le Guide des Fournitures de Qualité en Côte d'Ivoire](/actualites/042f21d0-1169-4e9f-ac1a-b9863c2734c5)
+
+## Fichiers SEO
+- [Sitemap XML](/sitemap.xml)
+- [Robots](/robots.txt)
