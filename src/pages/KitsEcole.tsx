@@ -157,36 +157,35 @@ const KitsEcole = () => {
     });
   };
 
-  const addKitItemsToCart = async (kit: Kit): Promise<{ ok: number; total: number; missing: string[] }> => {
+  const buildKitCartEntry = (kit: Kit) => {
     const sel = selected[kit.id] || new Set<string>();
-    const wanted = (kit.items || []).filter((it) => !it.is_optional || sel.has(it.id));
-    const missing: string[] = [];
-    let ok = 0;
-    for (const it of wanted) {
-      if (!it.product_id) {
-        missing.push(it.item_name);
-        continue;
-      }
-      try {
-        await addToCart(it.product_id, it.quantity || 1);
-        ok++;
-      } catch {
-        missing.push(it.item_name);
-      }
-    }
-    return { ok, total: wanted.length, missing };
+    const chosen = (kit.items || []).filter((it) => !it.is_optional || sel.has(it.id));
+    return {
+      kit_id: kit.id,
+      name: kit.name,
+      price: computePrice(kit),
+      quantity: 1,
+      school_id: kit.school_id,
+      school_name: kit.school_name ?? null,
+      grade_level: kit.grade_level,
+      category: kit.category,
+      image_url: kit.image_url,
+      composition: chosen.map((it) => ({
+        name: it.item_name,
+        quantity: it.quantity || 1,
+        is_optional: it.is_optional,
+        estimated_price: Number(it.estimated_price) || 0,
+        product_id: it.product_id,
+      })),
+    };
   };
 
   const handleAddKit = async (kit: Kit) => {
     setBuying(kit.id);
-    const { ok, total, missing } = await addKitItemsToCart(kit);
-    setBuying(null);
-    if (ok > 0) {
-      toast.success(
-        `Kit ajouté au panier — ${ok}/${total} article${ok > 1 ? "s" : ""}${missing.length ? ` (${missing.length} indisponible${missing.length > 1 ? "s" : ""})` : ""}.`,
-      );
-    } else {
-      toast.error("Aucun article de ce kit n'est encore lié au catalogue. Merci de contacter l'administrateur.");
+    try {
+      addKit(buildKitCartEntry(kit));
+    } finally {
+      setBuying(null);
     }
   };
 
@@ -197,19 +196,14 @@ const KitsEcole = () => {
       return;
     }
     setBuying(kit.id);
-    const { ok, total, missing } = await addKitItemsToCart(kit);
-    setBuying(null);
-    if (ok === 0) {
-      toast.error("Aucun article de ce kit n'est encore lié au catalogue. Merci de contacter l'administrateur.");
-      return;
+    try {
+      addKit(buildKitCartEntry(kit));
+      navigate("/checkout");
+    } finally {
+      setBuying(null);
     }
-    if (missing.length) {
-      toast.info(`${ok}/${total} article(s) ajoutés — ${missing.length} indisponible(s).`);
-    } else {
-      toast.success("Redirection vers le paiement…");
-    }
-    navigate("/checkout");
   };
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
