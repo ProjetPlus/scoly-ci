@@ -77,7 +77,7 @@ const KitsEcole = () => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [selected, setSelected] = useState<Record<string, Set<string>>>({});
   const [buying, setBuying] = useState<string | null>(null);
-  const { addToCart } = useCart();
+  const { addKit } = useCart();
 
   const shouldFetch = true;
 
