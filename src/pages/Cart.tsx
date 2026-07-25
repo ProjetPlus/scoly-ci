@@ -11,7 +11,7 @@ import { MIN_ORDER_AMOUNT, isOrderAmountValid, formatMinOrderMessage } from "@/l
 
 const Cart = () => {
   const { language, t } = useLanguage();
-  const { items, loading, removeFromCart, updateQuantity, total } = useCart();
+  const { items, kits, loading, removeFromCart, updateQuantity, removeKit, updateKitQuantity, total } = useCart();
   const { user } = useAuth();
 
   const getLocalizedName = (product: any) => {
