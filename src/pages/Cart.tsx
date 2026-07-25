@@ -152,7 +152,78 @@ const Cart = () => {
                   );
                 })}
 
-                {/* Trust strip */}
+                {kits.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <h2 className="text-base font-display font-bold text-foreground">
+                      Kits scolaires ({kits.length})
+                    </h2>
+                    {kits.map((kit) => (
+                      <article key={kit.kit_id} className="bg-card rounded-xl border border-primary/20 p-3 sm:p-4 flex gap-3 sm:gap-4">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-primary/5 flex-shrink-0 flex items-center justify-center">
+                          {kit.image_url ? (
+                            <SmartImage src={kit.image_url} alt={kit.name} className="w-full h-full object-cover" fallbackSrc="/placeholder.svg" />
+                          ) : (
+                            <ShoppingBag size={28} className="text-primary" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <p className="font-medium text-sm sm:text-base text-foreground line-clamp-2">{kit.name}</p>
+                              <p className="text-[11px] text-muted-foreground truncate">
+                                {kit.grade_level}{kit.school_name ? ` · ${kit.school_name}` : ""}
+                              </p>
+                            </div>
+                            <button onClick={() => removeKit(kit.kit_id)} className="p-1 -mr-1 text-muted-foreground hover:text-destructive shrink-0" aria-label="Retirer le kit">
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                          {kit.composition.length > 0 && (
+                            <details className="mt-1 text-[11px] text-muted-foreground">
+                              <summary className="cursor-pointer hover:text-primary">
+                                Composition ({kit.composition.length} article{kit.composition.length > 1 ? "s" : ""})
+                              </summary>
+                              <ul className="mt-1 pl-3 list-disc space-y-0.5 max-h-32 overflow-y-auto">
+                                {kit.composition.map((c, i) => (
+                                  <li key={i} className={c.is_optional ? "italic" : ""}>
+                                    {c.name} ×{c.quantity}{c.is_optional ? " (option)" : ""}
+                                  </li>
+                                ))}
+                              </ul>
+                            </details>
+                          )}
+                          <div className="mt-auto pt-2 flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-1 border border-border rounded-lg">
+                              <button
+                                onClick={() => updateKitQuantity(kit.kit_id, kit.quantity - 1)}
+                                className="w-8 h-8 flex items-center justify-center hover:bg-muted rounded-l-lg disabled:opacity-40"
+                                disabled={kit.quantity <= 1}
+                                aria-label="Diminuer"
+                              >
+                                <Minus size={14} />
+                              </button>
+                              <span className="w-8 text-center text-sm font-semibold">{kit.quantity}</span>
+                              <button
+                                onClick={() => updateKitQuantity(kit.kit_id, kit.quantity + 1)}
+                                className="w-8 h-8 flex items-center justify-center hover:bg-muted rounded-r-lg"
+                                aria-label="Augmenter"
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm sm:text-base font-bold text-primary tabular-nums">{formatPrice(kit.price * kit.quantity)}</p>
+                              {kit.quantity > 1 && (
+                                <p className="text-[11px] text-muted-foreground">{formatPrice(kit.price)} × {kit.quantity}</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2">
                   <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-2">
                     <Truck size={18} className="text-secondary shrink-0" />
