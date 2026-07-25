@@ -1,1 +1,0 @@
-DROP POLICY IF EXISTS "Anyone can view vendor public info" ON public.vendor_settings;

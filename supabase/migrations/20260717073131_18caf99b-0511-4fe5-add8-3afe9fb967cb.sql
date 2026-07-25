@@ -1,1 +1,0 @@
-ALTER TABLE public.smart_kit_items ADD COLUMN IF NOT EXISTS is_optional boolean NOT NULL DEFAULT false;
