@@ -58,7 +58,7 @@ type CheckoutStep = 'form' | 'payment' | 'success';
 
 const Checkout = () => {
   const { language, t } = useLanguage();
-  const { items, total, clearCart } = useCart();
+  const { items, kits, total, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
