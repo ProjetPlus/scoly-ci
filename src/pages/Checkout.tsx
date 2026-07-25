@@ -58,7 +58,7 @@ type CheckoutStep = 'form' | 'payment' | 'success';
 
 const Checkout = () => {
   const { language, t } = useLanguage();
-  const { items, total, clearCart } = useCart();
+  const { items, kits, total, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -328,7 +328,7 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user || items.length === 0) return;
+    if (!user || (items.length === 0 && kits.length === 0)) return;
     if (!isOrderAmountValid(finalTotal)) {
       toast({ title: "Montant trop bas", description: formatMinOrderMessage(), variant: "destructive" });
       return;
@@ -398,8 +398,8 @@ const Checkout = () => {
         }
       }
 
-      // Create order items
-      const orderItems = items.map(item => ({
+      // Create order items — products + kits (kits reified with product_id NULL)
+      const productLines = items.map(item => ({
         order_id: order.id,
         product_id: item.product_id,
         product_name: getLocalizedName(item.product),
@@ -408,11 +408,35 @@ const Checkout = () => {
         total_price: (item.product?.price || 0) * item.quantity,
       }));
 
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
+      const kitLines = kits.map(kit => ({
+        order_id: order.id,
+        product_id: null as string | null,
+        product_name: `Kit: ${kit.name}${kit.school_name ? ` — ${kit.school_name}` : ''} (${kit.grade_level || ''})`,
+        quantity: kit.quantity,
+        unit_price: kit.price,
+        total_price: kit.price * kit.quantity,
+      }));
 
-      if (itemsError) throw itemsError;
+      const orderItems = [...productLines, ...kitLines];
+
+      if (orderItems.length > 0) {
+        const { error: itemsError } = await supabase
+          .from('order_items')
+          .insert(orderItems);
+        if (itemsError) throw itemsError;
+      }
+
+      // Persist kit composition into order notes so the team sees full detail
+      if (kits.length > 0) {
+        const kitNotes = kits.map(k =>
+          `— Kit ${k.name} (${k.grade_level || ''}${k.school_name ? ' · ' + k.school_name : ''}) × ${k.quantity}\n` +
+          k.composition.map(c => `   • ${c.name} ×${c.quantity}${c.is_optional ? ' (option)' : ''}`).join('\n')
+        ).join('\n\n');
+        const combinedNotes = [formData.notes, '', '=== Composition des kits ===', kitNotes]
+          .filter(Boolean).join('\n');
+        await supabase.from('orders').update({ notes: combinedNotes }).eq('id', order.id);
+      }
+
 
       setOrderId(order.id);
       setOrderNumber(order.id.slice(0, 8).toUpperCase());
