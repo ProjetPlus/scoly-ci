@@ -61,7 +61,7 @@ const Cart = () => {
                 </div>
               ))}
             </div>
-          ) : items.length === 0 ? (
+          ) : items.length === 0 && kits.length === 0 ? (
             <div className="text-center py-16 sm:py-20 bg-card rounded-xl border border-border mt-6">
               <ShoppingBag size={56} className="mx-auto text-muted-foreground mb-4" />
               <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">{t.shop.emptyCart}</h2>
